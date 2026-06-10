@@ -1,0 +1,29 @@
+<div
+  *ngIf="visible"
+  class="confirm-overlay"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="title"
+  (click)="onBackdropClick($event)"
+>
+  <div class="confirm-card">
+    <div class="confirm-header">
+      <div class="confirm-icon" [ngClass]="variant">
+        <span *ngIf="variant === 'danger'">!</span>
+        <span *ngIf="variant === 'warning'">?</span>
+        <span *ngIf="variant === 'primary'">i</span>
+      </div>
+      <div>
+        <h3>{{ title }}</h3>
+        <p>{{ message }}</p>
+      </div>
+    </div>
+
+    <div class="confirm-actions">
+      <button type="button" class="btn-cancel" (click)="cancel.emit()">{{ cancelText }}</button>
+      <button type="button" class="btn-confirm" [ngClass]="variant" (click)="confirm.emit()">
+        {{ confirmText }}
+      </button>
+    </div>
+  </div>
+</div>

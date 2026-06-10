@@ -1,0 +1,98 @@
+<div class="checkout-container">
+  <h2>Thanh toán</h2>
+
+  <!-- Danh sách sản phẩm -->
+  <h3>Sản phẩm đã chọn</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Ảnh</th>
+        <th>Sản phẩm</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+        <th>Tổng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of selectedItems">
+        <td>
+          <img
+            [src]="item.images?.[0]?.imageUrl || 'assets/images/default.png'"
+            [alt]="item.name"
+            style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;"
+          />
+        </td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.price | number }} đ</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ (item.price * (item.quantity || 1)) | number }} đ</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="total"><strong>Tổng tiền:</strong> {{ total | number }} đ</p>
+
+  <!-- Form thông tin giao hàng -->
+  <h3>Thông tin nhận hàng</h3>
+  <form (ngSubmit)="confirmOrder()">
+    <div class="form-group">
+      <label>Họ và tên:</label>
+      <input type="text" [(ngModel)]="customer.fullName" name="fullName" required />
+    </div>
+
+    <div class="form-group">
+      <label>Email:</label>
+      <input type="email" [(ngModel)]="customer.email" name="email" required />
+    </div>
+
+    <div class="form-group">
+      <label>Số điện thoại:</label>
+      <input type="tel" [(ngModel)]="customer.phone" name="phone" required />
+    </div>
+
+    <div class="form-group">
+      <label>Tỉnh/Thành phố:</label>
+      <select [(ngModel)]="customer.city" (change)="onCityChange()" name="city" required>
+        <option value="">-- Chọn --</option>
+        <option *ngFor="let c of cities" [value]="c.Name">{{ c.Name }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Xã/Phường:</label>
+      <select [(ngModel)]="customer.ward" name="ward" required>
+        <option value="">-- Chọn --</option>
+        <option *ngFor="let w of wards" [value]="w.Name">{{ w.Name }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Địa chỉ (Số nhà, tên đường):</label>
+      <input type="text" [(ngModel)]="customer.address" name="address" required />
+    </div>
+
+    <!-- Phương thức thanh toán -->
+    <h3>Phương thức thanh toán</h3>
+    <div class="payment-methods">
+      <label>
+        <input type="radio" name="payment" value="cod" [(ngModel)]="paymentMethod" /> 
+        Thanh toán khi nhận hàng (COD)
+      </label>
+
+      <label>
+        <input type="radio" name="payment" value="vnpay" [(ngModel)]="paymentMethod" />
+        <img src="assets\images\VNPay_Logo.png" alt="VNPay" style="width: 60px; vertical-align: middle; margin-left: 8px;" />
+        VNPay
+      </label>
+
+      <label>
+        <input type="radio" name="payment" value="momo" [(ngModel)]="paymentMethod" />
+        <img src="assets\images\MoMo_Logo.png" alt="MoMo" style="width: 50px; vertical-align: middle; margin-left: 8px;" />
+        MoMo
+      </label>
+    </div>
+
+
+    <button type="submit" class="btn-confirm">Xác nhận thanh toán</button>
+  </form>
+</div>

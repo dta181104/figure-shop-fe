@@ -1,0 +1,157 @@
+/* Các style chỉ áp dụng cho component Register */
+
+/* Container tổng thể của trang đăng ký, nếu có */
+.register-page {
+    /* Thường thì style cho toàn bộ trang (background-image, căn giữa)
+       sẽ được đặt trong styles.css toàn cục hoặc trên body.
+       Tuy nhiên, nếu bạn muốn background khác cho trang đăng ký,
+       có thể đặt ở đây (nhưng sẽ cần điều chỉnh app.component.html) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1rem;
+    background-color: #1a202c; /* Màu nền dự phòng */
+    color: #e2e8f0; /* Màu chữ mặc định */
+    /* Thêm các thuộc tính background image tại đây */
+    background-image: url('https://wallpaperaccess.com/full/717760.jpg'); /* Hình nền cho trang đăng ký */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Container chính của form đăng ký */
+.register-container {
+    background: rgba(0, 0, 0, 0.4); 
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1rem; /* 16px */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 40px;
+    width: 400px; /* Chiều rộng cố định */
+    animation: fadeIn 0.8s ease-in-out;
+    text-align: center;
+    /* Các lớp Tailwind như max-w-md, w-full, p-8 md:p-10, rounded-xl,
+       shadow-2xl, space-y-6, transform, transition-all, duration-500,
+       hover:scale-105 sẽ được kết hợp hoặc ghi đè bởi các style này */
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
+}
+
+/* Tiêu đề */
+.register-container h1 { /* Đã đổi từ h2 sang h1 để khớp với HTML */
+    margin-bottom: 20px;
+    font-size: 26px; /* Kích thước font từ CSS gốc */
+    color: #fff;
+    /* Tailwind classes text-4xl md:text-5xl font-extrabold text-white mb-2
+       sẽ được áp dụng trước, các style này có thể ghi đè */
+}
+
+/* Paragraph (mô tả) */
+.register-container p {
+    font-size: 18px; /* Kích thước font từ CSS gốc, nếu muốn cụ thể hơn */
+    color: #ccc;
+    margin-bottom: 20px;
+    /* Tailwind classes text-lg text-gray-200 sẽ được áp dụng */
+}
+
+
+/* Input fields */
+.register-container input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    outline: none;
+    transition: 0.3s;
+    /* Tailwind classes mt-1 block w-full px-4 py-3 bg-gray-700 bg-opacity-70
+       border border-gray-600 rounded-lg text-white placeholder-gray-300
+       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+       shadow-sm transition-all duration-300 ease-in-out sẽ được áp dụng trước.
+       Các style trên có thể ghi đè/bổ sung. */
+}
+
+.register-container input::placeholder {
+    color: #ccc;
+}
+
+.register-container input:focus {
+    border-color: #3b82f6; /* Màu xanh dương từ Tailwind blue-500 */
+    box-shadow: 0 0 6px rgba(59, 130, 246, 0.6); /* Đổ bóng focus */
+}
+
+/* File input */
+.register-container input[type="file"] {
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    /* Tailwind classes như file:mr-4 file:py-2 file:px-4 file:rounded-lg
+       file:border-0 file:text-sm file:font-semibold file:bg-green-600
+       file:text-white hover:file:bg-green-700 sẽ hoạt động cùng */
+}
+
+/* Button gradient */
+.register-container button[type="submit"] { /* Chỉ định rõ type="submit" */
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #2563eb, #4f46e5); /* Gradient xanh dương */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    /* Các lớp Tailwind đã được sử dụng như w-full, flex, justify-center,
+       py-3 px-4, rounded-lg, shadow-lg, text-lg, font-semibold, text-white,
+       bg-gradient-to-r from-green-600 to-emerald-700
+       hover:from-green-700 hover:to-emerald-800 focus:outline-none focus:ring-2
+       focus:ring-offset-2 focus:ring-green-500 transform transition-all duration-300
+       ease-in-out hover:scale-105.
+       Lưu ý: background gradient ở đây đang dùng màu xanh dương (#2563eb, #4f46e5),
+       nếu bạn muốn màu xanh lá như trong HTML (from-green-600 to-emerald-700),
+       hãy xóa dòng `background: linear-gradient(...)` này để Tailwind xử lý. */
+}
+
+.register-container button[type="submit"]:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* Link */
+.register-container a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+.register-container a:hover {
+    color: #00e5ff; /* Màu xanh sáng khi hover */
+    text-decoration: underline;
+}
+
+/* Hiệu ứng hiện lên */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .register-container {
+        width: 95%; /* Chiều rộng linh hoạt trên màn hình nhỏ */
+        padding: 20px;
+    }
+}

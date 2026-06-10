@@ -1,0 +1,38 @@
+<div *ngIf="product; else loading" class="detail-container">
+  <!-- Hình ảnh sản phẩm -->
+  <div class="image-section">
+    <img [src]="selectedImageUrl || getMainImage()" [alt]="product.name" class="main-image" />
+
+    <!-- Thumbnail nếu có nhiều ảnh -->
+    <div *ngIf="hasMultipleImages" class="thumbnail-list">
+      <img
+        *ngFor="let img of product.images"
+        [src]="img.imageUrl"
+        [alt]="product.name"
+        [class.active]="img.imageMain || selectedImageUrl === img.imageUrl"
+        class="thumbnail"
+        (click)="onThumbnailClick(img.imageUrl!)"
+      />
+    </div>
+  </div>
+
+  <!-- Thông tin sản phẩm -->
+  <div class="info-section">
+    <h2 class="product-name">{{ product.name }}</h2>
+    <p class="product-description">{{ product.description }}</p>
+
+    <ul class="product-meta">
+      <li><strong>Code:</strong> {{ product.code }}</li>
+      <li><strong>Số lượng:</strong> {{ product.quantity }}</li>
+    </ul>
+
+    <h3 class="price">{{ product.price | number: '1.0-0' }} đ</h3>
+
+    <!-- Nút thêm vào giỏ hàng -->
+    <button class="add-cart-btn" (click)="addToCart()">Thêm vào giỏ hàng</button>
+  </div>
+</div>
+
+<ng-template #loading>
+  <p class="loading-text">Loading product detail...</p>
+</ng-template>

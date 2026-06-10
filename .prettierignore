@@ -1,0 +1,8 @@
+dist
+node_modules
+.angular
+coverage
+package-lock.json
+*.min.js
+.vscode
+src/assets/data

@@ -1,0 +1,61 @@
+<div class="cart-container" *ngIf="cartItems.length; else empty">
+  <h2>Giỏ hàng của bạn</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Chọn</th>
+        <th>Ảnh</th>
+        <th>Sản phẩm</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+        <th>Tổng</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of cartItems">
+        <td>
+          <input 
+            type="checkbox" 
+            [(ngModel)]="item.selected" 
+            (change)="updateSelectedItems()" 
+          />
+        </td>
+        <td>
+          <img 
+            [src]="item.images?.[0]?.imageUrl || 'assets/images/default.png'" 
+            [alt]="item.name" 
+            style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"
+          />
+        </td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.price | number }} đ</td>
+        <td>
+          <button (click)="decrease(item)">-</button>
+          {{ item.quantity }}
+          <button (click)="increase(item)">+</button>
+        </td>
+        <td>{{ item.price * item.quantity! | number }} đ</td>
+        <td>
+          <button class="remove-btn" (click)="remove(item.id)">Xóa sản phẩm</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="cart-summary">
+    <p><strong>Tổng tiền (đã chọn):</strong> {{ selectedTotal | number }} đ</p>
+    <div class="summary-actions">
+      <button (click)="clearCart()">Xóa giỏ hàng</button>
+      <button [disabled]="!hasSelected()" (click)="checkout()">Thanh toán</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #empty>
+  <div class="empty-cart">
+    <p>Giỏ hàng trống. <a routerLink="/home">Tiếp tục mua sắm.</a></p>
+  </div>
+</ng-template>
+

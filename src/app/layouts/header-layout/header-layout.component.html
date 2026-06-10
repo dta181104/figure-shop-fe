@@ -1,0 +1,45 @@
+<div class="group-header" *ngIf="!hideOnAuthPages">
+  <div class="header-logo" routerLink="/home">
+    <!-- <img
+      src="assets/images/new-home.png"
+      alt="Figure Shop"
+      class="app-logo"
+      width="120"
+      height="auto"
+    /> -->
+  </div>
+
+  <div class="group-navigation">
+    <nav class="main-nav" aria-label="Main navigation">
+      <a routerLink="/home" class="nav-link">Trang chủ</a>
+      <a routerLink="/cart" class="nav-link">Giỏ hàng</a>
+    </nav>
+
+    <div class="account-area">
+      <ng-container *ngIf="isLoggedIn; else guestLinks">
+        <button
+          class="avatar-btn"
+          type="button"
+          (click)="toggleDropdown()"
+          aria-haspopup="true"
+          [attr.aria-expanded]="showAccountDropdown"
+        >
+          <img src="assets/images/login.png" alt="User" width="36" height="36" class="avatar" />
+        </button>
+
+        <div class="account-dropdown" *ngIf="showAccountDropdown">
+          <a routerLink="/account" (click)="showAccountDropdown = false">Quản lý tài khoản</a>
+          <a *ngIf="isAdmin" routerLink="/admin" (click)="showAccountDropdown = false"
+            >Quản trị hệ thống</a
+          >
+          <button class="btn-logout" type="button" (click)="logout()">Đăng xuất</button>
+        </div>
+      </ng-container>
+
+      <ng-template #guestLinks>
+        <a routerLink="/login" class="nav-link">Đăng nhập</a>
+        <a routerLink="/register" class="nav-link btn-register">Đăng ký</a>
+      </ng-template>
+    </div>
+  </div>
+</div>

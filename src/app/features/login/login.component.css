@@ -1,0 +1,223 @@
+/* Các style chỉ áp dụng cho login (giống hệt register) */
+
+/* Container tổng thể của trang đăng nhập */
+.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1rem;
+    background-color: #1a202c;
+    color: #e2e8f0;
+    background-image: url('https://wallpaperaccess.com/full/717760.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Container chính của form đăng nhập */
+.login-container {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 40px;
+    width: 400px;
+    animation: fadeIn 0.8s ease-in-out;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Tiêu đề */
+.login-container h1 {
+    margin-bottom: 20px;
+    font-size: 26px;
+    color: #fff;
+}
+
+/* Paragraph mô tả */
+.login-container p {
+    font-size: 18px;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+/* Input fields */
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    outline: none;
+    transition: 0.3s;
+}
+
+.login-container input::placeholder {
+    color: #ccc;
+}
+
+.login-container input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 6px rgba(59, 130, 246, 0.6);
+}
+
+/* Button gradient */
+.login-container button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #16a34a, #059669); /* giống register */
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.login-container button[type="submit"]:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* Links */
+.login-container a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+.login-container a:hover {
+    color: #00e5ff;
+    text-decoration: underline;
+}
+
+/* Hiệu ứng fadeIn */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .login-container {
+        width: 95%;
+        padding: 20px;
+    }
+}
+/* Nền mờ overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px); /* hiệu ứng mờ nền */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* luôn nổi trên cùng */
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Hộp modal */
+.modal {
+  background: #ffffff;
+  color: #1f2937; /* text-gray-800 */
+  border-radius: 12px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  position: relative;
+  animation: slideDown 0.3s ease-in-out;
+  text-align: center;
+}
+
+/* Nút đóng (X) */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #6b7280; /* text-gray-500 */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.close-btn:hover {
+  color: #111827; /* text-gray-900 */
+  transform: scale(1.2);
+}
+
+/* Input trong modal */
+.modal input {
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: 1px solid #d1d5db; /* border-gray-300 */
+  outline: none;
+  font-size: 15px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.modal input:focus {
+  border-color: #3b82f6; /* blue-500 */
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.6);
+}
+
+/* Button trong modal */
+.modal button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8); /* từ xanh nhạt -> xanh đậm */
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.modal button:hover {
+  transform: scale(1.05);
+  opacity: 0.95;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

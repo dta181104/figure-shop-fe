@@ -1,0 +1,14 @@
+/* productDetail.component.css */
+/* Các style được đặt ở đây chỉ áp dụng cho component chi tiết sản phẩm. */
+/* Với việc sử dụng Tailwind CSS trong HTML, file này thường rất tối thiểu. */
+
+/* Ví dụ: Bạn có thể thêm các hiệu ứng hover tùy chỉnh hoặc animation nếu cần */
+/*
+.custom-hover-scale:hover {
+    transform: scale(1.02);
+    transition: transform 0.2s ease-in-out;
+}
+*/
+
+/* Hiện tại, không có CSS tùy chỉnh cụ thể nào cho component này */
+/* ngoài các lớp tiện ích của Tailwind đã có trong HTML. */

@@ -1,0 +1,30 @@
+<section class="admin-page">
+  <header class="admin-header">
+    <div>
+      <p class="eyebrow">Quản trị hệ thống</p>
+    </div>
+  </header>
+
+  <div *ngIf="forbiddenMessage" class="alert alert-error">{{ forbiddenMessage }}</div>
+
+  <ng-container *ngIf="!forbiddenMessage">
+    <nav class="admin-nav" aria-label="Admin modules">
+      <a routerLink="/admin/users" class="tab-btn" [class.active]="activeTab === 'users'">
+        Quản lý người dùng
+      </a>
+      <a routerLink="/admin/products" class="tab-btn" [class.active]="activeTab === 'products'">
+        Quản lý sản phẩm
+      </a>
+      <a routerLink="/admin/roles" class="tab-btn" [class.active]="activeTab === 'roles'">
+        Quản lý quyền
+      </a>
+    </nav>
+
+    <!-- Load API on-demand bằng cách sử dụng *ngIf hoặc router-outlet -->
+    <div class="admin-content-area">
+      <app-admin-user *ngIf="activeTab === 'users'"></app-admin-user>
+      <app-admin-product *ngIf="activeTab === 'products'"></app-admin-product>
+      <app-admin-role *ngIf="activeTab === 'roles'"></app-admin-role>
+    </div>
+  </ng-container>
+</section>

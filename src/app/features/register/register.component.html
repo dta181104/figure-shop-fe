@@ -1,0 +1,67 @@
+<div class="register-page">
+  <div class="register-container max-w-md w-full p-8 md:p-10 rounded-xl shadow-2xl space-y-6 
+              transform transition-all duration-500 hover:scale-105">
+    <div class="text-center">
+      <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2">Đăng Ký</h1>
+      <p class="text-lg text-gray-200">Tạo tài khoản mới để tham gia cửa hàng mô hình!</p>
+    </div>
+
+    <form class="space-y-6" (ngSubmit)="onRegister()">
+       <div>
+        <input type="text" id="name" name="name" [(ngModel)]="user.name" placeholder="Họ và tên" required
+               class="mt-1 block w-full px-4 py-3 bg-gray-700 bg-opacity-70 border border-gray-600 
+                      rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 
+                      focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-300 ease-in-out" />
+      </div>
+
+      <div>
+        <input type="text" id="username" name="username" [(ngModel)]="user.username" placeholder="Tên đăng nhập" required
+               class="mt-1 block w-full px-4 py-3 bg-gray-700 bg-opacity-70 border border-gray-600 
+                      rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 
+                      focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-300 ease-in-out" />
+      </div>
+
+      <div>
+        <input type="email" id="email" name="email" [(ngModel)]="user.email" placeholder="Email" required
+               class="mt-1 block w-full px-4 py-3 bg-gray-700 bg-opacity-70 border border-gray-600 
+                      rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 
+                      focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-300 ease-in-out" />
+      </div>
+
+      <div>
+        <input type="password" id="pass" name="pass" [(ngModel)]="user.pass" placeholder="Mật khẩu" required
+               class="mt-1 block w-full px-4 py-3 bg-gray-700 bg-opacity-70 border border-gray-600 
+                      rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 
+                      focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-300 ease-in-out" />
+      </div>
+
+      <div>
+        <input type="file" id="avatarFile" name="avatarFile" (change)="onFileSelected($event)" accept="image/*" required
+               class="block w-full text-gray-200 file:mr-4 file:py-2 file:px-4
+                      file:rounded-lg file:border-0 file:text-sm file:font-semibold
+                      file:bg-green-600 file:text-white hover:file:bg-green-700 cursor-pointer" />
+      </div>
+
+      <div *ngIf="errorMessage" class="text-red-400 text-sm text-center -mt-3">
+        {{ errorMessage }}
+      </div>
+
+      <div>
+        <button type="submit"
+                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg 
+                       text-lg font-semibold text-white bg-gradient-to-r from-green-600 to-emerald-700 
+                       hover:from-green-700 hover:to-emerald-800 focus:outline-none focus:ring-2 
+                       focus:ring-offset-2 focus:ring-green-500 transform transition-all duration-300 ease-in-out hover:scale-105">
+          Đăng Ký Ngay
+        </button>
+      </div>
+    </form>
+
+    <div class="text-center text-sm text-gray-300">
+      Đã có tài khoản?
+      <a (click)="goToLogin()" class="font-medium text-blue-400 hover:text-blue-300 transition-colors duration-200">
+        Đăng nhập ngay
+      </a>
+    </div>
+  </div>
+</div>

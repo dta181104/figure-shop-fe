@@ -1,0 +1,165 @@
+<!-- login.component.html -->
+<div
+  class="login-page register-page min-h-screen flex items-center justify-center"
+>
+  <div
+    class="login-container register-container max-w-md w-full p-8 md:p-10 rounded-xl shadow-2xl space-y-6 transform transition-all duration-500 hover:scale-105 bg-black/40 backdrop-blur-md"
+  >
+    <!-- Tiêu đề -->
+    <div class="text-center">
+      <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2">
+        Đăng Nhập
+      </h1>
+      <p class="text-lg text-gray-200">
+        Chào mừng bạn trở lại cửa hàng mô hình!
+      </p>
+    </div>
+
+    <!-- Form Angular -->
+    <form class="space-y-6" (ngSubmit)="onLogin()" #loginForm="ngForm">
+      <!-- Username -->
+      <div>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          [(ngModel)]="user.username"
+          placeholder="Tên đăng nhập"
+          required
+          class="mt-1 block w-full px-4 py-3 bg-gray-700 bg-opacity-70 border border-gray-600 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-300 ease-in-out"
+        />
+      </div>
+
+      <!-- Password -->
+      <div>
+        <input
+          type="password"
+          id="pass"
+          name="pass"
+          [(ngModel)]="user.pass"
+          placeholder="Mật khẩu"
+          required
+          class="mt-1 block w-full px-4 py-3 bg-gray-700 bg-opacity-70 border border-gray-600 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-300 ease-in-out"
+        />
+      </div>
+
+      <!-- Hiển thị lỗi -->
+      <div *ngIf="errorMessage" class="text-red-400 text-sm text-center -mt-3">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Quên mật khẩu -->
+      <div class="flex items-center justify-between">
+        <a
+          (click)="openForgotPasswordModal($event)"
+          class="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors duration-200"
+        >
+          Quên mật khẩu?
+        </a>
+      </div>
+      <!-- Submit -->
+      <div>
+        <button
+          type="submit"
+          class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-lg font-semibold text-white bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transform transition-all duration-300 ease-in-out hover:scale-105"
+        >
+          Đăng Nhập Ngay
+        </button>
+      </div>
+    </form>
+
+    <!-- Link sang đăng ký -->
+    <div class="text-center text-sm text-gray-300">
+      Bạn chưa có tài khoản?
+      <a
+        (click)="goToRegister()"
+        class="font-medium text-blue-400 hover:text-blue-300 transition-colors duration-200"
+      >
+        Đăng ký ngay
+      </a>
+    </div>
+  </div>
+
+  <!-- Modal quên mật khẩu (nhập email) -->
+  <div *ngIf="showForgotPasswordModal" class="modal-overlay">
+    <div class="modal">
+      <span class="close-btn" (click)="closeForgotPasswordModal()"
+        >&times;</span
+      >
+      <h2>Quên mật khẩu</h2>
+      <p>Nhập email và Username để lấy lại mật khẩu</p>
+      <input
+        type="text"
+        [(ngModel)]="forgotUsername"
+        placeholder="Nhập username của bạn"
+        required
+      />
+
+      <input
+        type="email"
+        [(ngModel)]="forgotEmail"
+        placeholder="Nhập email của bạn"
+        required
+      />
+
+      <div *ngIf="forgotMessage" class="text-sm text-red-500 mb-2">
+        {{ forgotMessage }}
+      </div>
+
+      <button
+        (click)="onForgotPassword()"
+        [disabled]="isSending">
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal nhập OTP -->
+  <div *ngIf="showOtpModal" class="modal-overlay">
+    <div class="modal">
+      <span class="close-btn" (click)="closeOtpModal()">&times;</span>
+      <h2>Nhập mã xác nhận</h2>
+      <p>
+        Mã đã được gửi về email: <strong>{{ forgotEmail }}</strong>
+      </p>
+
+      <input
+        type="text"
+        [(ngModel)]="otpCode"
+        placeholder="Nhập mã OTP"
+        required
+      />
+
+      <div *ngIf="otpMessage" class="text-sm text-red-500 mb-2">
+        {{ otpMessage }}
+      </div>
+
+      <button (click)="onVerifyOtp()">Xác nhận</button>
+    </div>
+  </div>
+
+  <!-- Modal reset mật khẩu -->
+  <div *ngIf="showResetPasswordModal" class="modal-overlay">
+    <div class="modal">
+      <span class="close-btn" (click)="showResetPasswordModal = false"
+        >&times;</span
+      >
+      <h2>Đặt lại mật khẩu</h2>
+      <p>
+        Email: <strong>{{ forgotEmail }}</strong>
+      </p>
+
+      <input
+        type="password"
+        [(ngModel)]="newPassword"
+        placeholder="Mật khẩu mới"
+        required
+      />
+
+      <div *ngIf="resetMessage" class="text-sm text-red-500 mb-2">
+        {{ resetMessage }}
+      </div>
+
+      <button (click)="onResetPassword()">Xác nhận</button>
+    </div>
+  </div>
+</div>

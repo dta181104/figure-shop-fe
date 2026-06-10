@@ -1,0 +1,214 @@
+/* Nền trang */
+:host {
+  display: block;
+  background: linear-gradient(135deg, #eef4fd 0%, #f5f7fc 50%, #fffbf0 100%);
+  min-height: 100vh;
+  padding: 20px 0;
+}
+
+/* Container chính */
+.detail-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8eef5;
+}
+
+/* Section hình ảnh */
+.image-section {
+  flex: 1 1 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.main-image {
+  width: 400px;
+  height: 400px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e8eef5;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.main-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* Thumbnail */
+.thumbnail-list {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.thumbnail {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid #dfe5ed;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.thumbnail:hover {
+  border-color: #0066cc;
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+}
+
+.thumbnail.active {
+  border-color: #0066cc;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+  transform: scale(1.08);
+}
+
+/* Section thông tin */
+.info-section {
+  flex: 1 1 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.product-name {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1f3a;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.product-description {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #4a5568;
+  margin: 0;
+  padding: 15px;
+  background-color: #f0f4f9;
+  border-radius: 8px;
+  border-left: 4px solid #0066cc;
+}
+
+/* Meta thông tin */
+.product-meta {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-meta li {
+  display: flex;
+  align-items: center;
+  color: #4a5568;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #e8eef5;
+}
+
+.product-meta li strong {
+  color: #2d3748;
+  margin-right: 8px;
+}
+
+/* Giá */
+.price {
+  font-size: 36px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 10px 0;
+}
+
+/* Nút thêm vào giỏ hàng */
+.add-cart-btn {
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+  margin-top: 15px;
+}
+
+.add-cart-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+  background: linear-gradient(135deg, #0052a3 0%, #003d7a 100%);
+}
+
+.add-cart-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0, 102, 204, 0.2);
+}
+
+/* Loading text */
+.loading-text {
+  text-align: center;
+  font-size: 18px;
+  color: #4a5568;
+  margin-top: 60px;
+  font-weight: 500;
+}
+
+.add-cart-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  width: fit-content;
+}
+
+.add-cart-btn:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .detail-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .main-image {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+  }
+
+  .info-section {
+    flex: 1 1 100%;
+  }
+}

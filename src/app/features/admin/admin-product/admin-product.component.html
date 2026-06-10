@@ -1,0 +1,62 @@
+<div class="admin-grid">
+  <form class="card" (ngSubmit)="saveProduct()">
+    <h3>{{ editingProductCode ? 'Cập nhật sản phẩm' : 'Tạo sản phẩm mới' }}</h3>
+    <label>
+      <span>Tên sản phẩm</span>
+      <input name="productName" [(ngModel)]="productForm.name" required />
+    </label>
+    <label>
+      <span>Giá</span>
+      <input name="productPrice" type="number" [(ngModel)]="productForm.price" required />
+    </label>
+    <div class="actions">
+      <button type="submit" class="btn-primary" [disabled]="isSavingProduct">Lưu sản phẩm</button>
+    </div>
+  </form>
+
+  <div class="card">
+    <div class="card-header">
+      <h3>Danh sách sản phẩm</h3>
+      <input
+        [(ngModel)]="productQuery"
+        (ngModelChange)="loadProducts()"
+        placeholder="Tìm kiếm sản phẩm..."
+      />
+    </div>
+
+    <ul class="list" *ngIf="!isProductsLoading">
+      <li *ngFor="let product of products">
+        <div>
+          <strong>{{ product.name }}</strong>
+          <small>Giá: {{ product.price | number }} đ</small>
+        </div>
+        <div class="inline-actions">
+          <button class="action-btn action-edit" (click)="editProduct(product)">Sửa</button>
+          <button class="action-btn action-delete" (click)="deleteProduct(product)">Xóa</button>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Phân trang NG-ZORRO -->
+    <div class="pagination-container">
+      <nz-pagination
+        [(nzPageIndex)]="pageIndex"
+        [nzTotal]="totalProducts"
+        [nzPageSize]="pageSize"
+        (nzPageIndexChange)="loadProducts()"
+      >
+      </nz-pagination>
+    </div>
+  </div>
+
+  <app-confirm-dialog
+    [visible]="confirmVisible"
+    [title]="confirmTitle"
+    [message]="confirmMessage"
+    [confirmText]="confirmText"
+    cancelText="Hủy"
+    [variant]="confirmVariant"
+    (confirm)="confirmActionNow()"
+    (cancel)="closeConfirm()"
+  ></app-confirm-dialog>
+</div>

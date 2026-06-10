@@ -1,0 +1,11 @@
+<div *ngIf="visible" class="notification" [ngClass]="type">
+  <span class="icon">
+    <ng-container [ngSwitch]="type">
+      <span *ngSwitchCase="'success'">✅</span>
+      <span *ngSwitchCase="'error'">❌</span>
+      <span *ngSwitchCase="'warning'">⚠️</span>
+      <span *ngSwitchDefault>ℹ️</span>
+    </ng-container>
+  </span>
+  <span class="message">{{ message }}</span>
+</div>

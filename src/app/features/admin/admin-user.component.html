@@ -1,0 +1,79 @@
+<div class="admin-grid">
+  <form class="card" (ngSubmit)="saveUser()">
+    <h3>{{ editingUserCode ? 'Cập nhật người dùng' : 'Tạo người dùng mới' }}</h3>
+    <label>
+      <span>Username</span>
+      <input
+        name="username"
+        [(ngModel)]="userForm.username"
+        [readonly]="!!editingUserCode"
+        required
+      />
+    </label>
+    <label *ngIf="!editingUserCode">
+      <span>Mật khẩu</span>
+      <input name="password" [(ngModel)]="userForm.password" type="password" required />
+    </label>
+    <label>
+      <span>Họ tên</span>
+      <input name="name" [(ngModel)]="userForm.name" />
+    </label>
+    <label>
+      <span>Email</span>
+      <input name="email" [(ngModel)]="userForm.email" type="email" />
+    </label>
+    <label>
+      <span>Trạng thái</span>
+      <select name="status" [(ngModel)]="userForm.status">
+        <option value="ACTIVE">ACTIVE</option>
+        <option value="INACTIVE">INACTIVE</option>
+      </select>
+    </label>
+    <div class="actions">
+      <button type="submit" class="btn-primary" [disabled]="isSavingUser">Lưu</button>
+    </div>
+  </form>
+
+  <div class="card">
+    <div class="card-header">
+      <h3>Danh sách người dùng</h3>
+      <input [(ngModel)]="userQuery" (ngModelChange)="loadUsers()" placeholder="Tìm kiếm..." />
+    </div>
+
+    <ul class="list" *ngIf="!isUsersLoading">
+      <li *ngFor="let user of users">
+        <div>
+          <strong>{{ user.username }}</strong>
+          <p>{{ user.name }}</p>
+          <small>{{ user.email }}</small>
+        </div>
+        <div class="inline-actions">
+          <button class="action-btn action-edit" (click)="editUser(user)">Sửa</button>
+          <button class="action-btn action-delete" (click)="deleteUser(user)">Xóa</button>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Phân trang NG-ZORRO -->
+    <div class="pagination-container">
+      <nz-pagination
+        [(nzPageIndex)]="pageIndex"
+        [nzTotal]="totalUsers"
+        [nzPageSize]="pageSize"
+        (nzPageIndexChange)="loadUsers()"
+      >
+      </nz-pagination>
+    </div>
+  </div>
+
+  <app-confirm-dialog
+    [visible]="confirmVisible"
+    [title]="confirmTitle"
+    [message]="confirmMessage"
+    [confirmText]="confirmText"
+    cancelText="Hủy"
+    [variant]="confirmVariant"
+    (confirm)="confirmActionNow()"
+    (cancel)="closeConfirm()"
+  ></app-confirm-dialog>
+</div>
