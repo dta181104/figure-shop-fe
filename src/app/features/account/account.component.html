@@ -8,38 +8,48 @@
 
     <aside class="account-card account-card--profile">
       <div class="profile-top">
-        <div class="profile-avatar">
+        <!-- <div class="profile-avatar">
           <img
             *ngIf="profile?.avatarUrl; else initialsAvatar"
             [src]="profile?.avatarUrl"
             [alt]="displayName"
           />
           <ng-template #initialsAvatar>{{ avatarLabel || 'U' }}</ng-template>
-        </div>
+        </div> -->
 
         <div class="profile-meta">
           <p class="eyebrow">Trang cá nhân</p>
           <h1>{{ displayName }}</h1>
           <p class="muted">{{ email }}</p>
-          <span class="role-badge" [class.role-badge--admin]="isAdmin">
-            {{ isAdmin ? 'Quản trị viên' : 'Khách hàng' }}
-          </span>
+          <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px">
+            <span
+              *ngFor="let role of profile?.roles"
+              class="role-badge"
+              [class.role-badge--admin]="role.code === 'ADMIN' || role.name === 'ADMIN'"
+            >
+              {{ role.name }}
+            </span>
+          </div>
         </div>
       </div>
 
       <div class="profile-details">
-        <div>
+        <!-- <div>
           <span class="label">Số điện thoại</span>
           <strong>{{ phone }}</strong>
         </div>
         <div>
           <span class="label">Tài khoản từ</span>
           <strong>{{ createdAt }}</strong>
-        </div>
+        </div> -->
       </div>
 
       <div class="profile-actions">
-        <button (click)="toggleEdit()" class="action-link action-link--primary" style="width: 100%; border: none; cursor: pointer;">
+        <button
+          (click)="toggleEdit()"
+          class="action-link action-link--primary"
+          style="width: 100%; border: none; cursor: pointer"
+        >
           {{ isEditing ? 'Hủy cập nhật' : 'Cập nhật thông tin' }}
         </button>
       </div>
@@ -67,7 +77,11 @@
           </div>
           <div>
             <span class="label">Vai trò</span>
-            <strong>{{ isAdmin ? 'Administrator' : 'Customer' }}</strong>
+            <strong>
+              <ng-container *ngFor="let role of profile?.roles; let last = last">
+                {{ role.name }}{{ last ? '' : ', ' }}
+              </ng-container>
+            </strong>
           </div>
         </div>
       </section>
@@ -81,21 +95,41 @@
         <form [formGroup]="updateForm" (ngSubmit)="onSubmitUpdate()" class="update-form">
           <div class="form-group">
             <label class="label">Họ tên</label>
-            <input type="text" formControlName="name" class="form-control" placeholder="Nhập họ tên" />
+            <input
+              type="text"
+              formControlName="name"
+              class="form-control"
+              placeholder="Nhập họ tên"
+            />
           </div>
           <div class="form-group">
             <label class="label">Email</label>
-            <input type="email" formControlName="email" class="form-control" placeholder="Nhập email" />
+            <input
+              type="email"
+              formControlName="email"
+              class="form-control"
+              placeholder="Nhập email"
+            />
           </div>
           <div class="form-group">
             <label class="label">Số điện thoại</label>
-            <input type="text" formControlName="phone" class="form-control" placeholder="Nhập số điện thoại" />
+            <input
+              type="text"
+              formControlName="phone"
+              class="form-control"
+              placeholder="Nhập số điện thoại"
+            />
           </div>
-          
-          <div class="form-actions" style="margin-top: 1.5rem;">
-             <button type="submit" class="action-link action-link--primary" [disabled]="updateForm.invalid || isUpdating" style="border: none; cursor: pointer; padding: 0.85rem 2rem;">
-               {{ isUpdating ? 'Đang lưu...' : 'Lưu thay đổi' }}
-             </button>
+
+          <div class="form-actions" style="margin-top: 1.5rem">
+            <button
+              type="submit"
+              class="action-link action-link--primary"
+              [disabled]="updateForm.invalid || isUpdating"
+              style="border: none; cursor: pointer; padding: 0.85rem 2rem"
+            >
+              {{ isUpdating ? 'Đang lưu...' : 'Lưu thay đổi' }}
+            </button>
           </div>
         </form>
       </section>

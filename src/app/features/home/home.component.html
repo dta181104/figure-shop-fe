@@ -81,77 +81,6 @@
   </div>
 </section> -->
 
-<!-- Bộ lọc sản phẩm -->
-<section class="filters container">
-  <form (submit)="applyFilters()" class="filter-form">
-    <div class="filter-group">
-      <label>Tìm kiếm</label>
-      <input
-        type="text"
-        name="keyword"
-        [(ngModel)]="params.keyword"
-        placeholder="Tên sản phẩm..."
-        class="form-control"
-      />
-    </div>
-
-    <div class="filter-group">
-      <label>Danh mục</label>
-      <select name="categoryId" [(ngModel)]="params.categoryId" class="form-control">
-        <option value="">Tất cả</option>
-        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
-      </select>
-    </div>
-
-    <div class="filter-group">
-      <label>Giá từ</label>
-      <input
-        type="number"
-        name="minPrice"
-        [(ngModel)]="params.minPrice"
-        placeholder="0"
-        class="form-control"
-      />
-    </div>
-
-    <div class="filter-group">
-      <label>Đến giá</label>
-      <input
-        type="number"
-        name="maxPrice"
-        [(ngModel)]="params.maxPrice"
-        placeholder="..."
-        class="form-control"
-      />
-    </div>
-
-    <div class="filter-group">
-      <label>Sắp xếp theo</label>
-      <select name="sortBy" [(ngModel)]="params.sortBy" class="form-control">
-        <option value="">Mặc định</option>
-        <option value="NAME">Tên</option>
-        <option value="PRICE">Giá</option>
-        <option value="UPDATED_DATE">Ngày cập nhật</option>
-        <option value="HEIGHT">Chiều cao</option>
-        <option value="WEIGHT">Cân nặng</option>
-      </select>
-    </div>
-
-    <div class="filter-group">
-      <label>Hướng</label>
-      <select name="sortDirection" [(ngModel)]="params.sortDirection" class="form-control">
-        <option value="ASC">Tăng dần</option>
-        <option value="DESC">Giảm dần</option>
-      </select>
-    </div>
-
-    <div class="filter-actions">
-      <button type="submit" class="btn btn--primary">Lọc</button>
-      <button type="button" class="btn btn--ghost" (click)="clearFilters()">Xóa lọc</button>
-    </div>
-  </form>
-</section>
-
 <!-- Sản phẩm nổi bật -->
 <section class="featured container">
   <header class="section-header">
@@ -163,8 +92,104 @@
     </div>
   </header>
 
+  <!-- Bộ lọc sản phẩm -->
+  <section
+    class="filters"
+    style="border: 2px solid black; padding: 20px; border-radius: 8px; margin-bottom: 30px"
+  >
+    <form (submit)="applyFilters()" class="filter-form">
+      <div class="filter-group">
+        <label>Tìm kiếm</label>
+        <input
+          type="text"
+          name="keyword"
+          [(ngModel)]="params.keyword"
+          placeholder="Tên sản phẩm..."
+          class="form-control"
+          style="border: 1px solid black"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label>Danh mục</label>
+        <select
+          name="categoryId"
+          [(ngModel)]="params.categoryId"
+          class="form-control"
+          style="border: 1px solid black"
+        >
+          <option value="">Tất cả</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Giá từ</label>
+        <input
+          type="number"
+          name="minPrice"
+          [(ngModel)]="params.minPrice"
+          placeholder="0"
+          class="form-control"
+          style="border: 1px solid black"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label>Đến giá</label>
+        <input
+          type="number"
+          name="maxPrice"
+          [(ngModel)]="params.maxPrice"
+          placeholder="..."
+          class="form-control"
+          style="border: 1px solid black"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label>Sắp xếp theo</label>
+        <select
+          name="sortBy"
+          [(ngModel)]="params.sortBy"
+          class="form-control"
+          style="border: 1px solid black"
+        >
+          <option value="">Mặc định</option>
+          <option value="NAME">Tên</option>
+          <option value="PRICE">Giá</option>
+          <option value="UPDATED_DATE">Ngày cập nhật</option>
+          <option value="HEIGHT">Chiều cao</option>
+          <option value="WEIGHT">Cân nặng</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Sắp xếp</label>
+        <select
+          name="sortDirection"
+          [(ngModel)]="params.sortDirection"
+          class="form-control"
+          style="border: 1px solid black"
+        >
+          <option value="ASC">Tăng dần</option>
+          <option value="DESC">Giảm dần</option>
+        </select>
+      </div>
+
+      <div class="filter-actions">
+        <button type="submit" class="btn btn--primary">Tìm kiếm</button>
+        <button type="button" class="btn btn--ghost" (click)="clearFilters()">Xóa bộ lọc</button>
+      </div>
+    </form>
+  </section>
+
   <!-- Nếu sau này bạn bind *ngFor từ API thì thay block card tĩnh này -->
-  <div class="product-grid">
+  <div
+    *ngIf="products.length > 0; else noProducts"
+    class="product-grid"
+    style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px"
+  >
     <article *ngFor="let product of products" class="product-card" (click)="viewDetail(product.id)">
       <!-- Thumbnail -->
       <div class="product-card__thumb">
@@ -181,6 +206,23 @@
       </div>
     </article>
   </div>
+
+  <ng-template #noProducts>
+    <div
+      style="
+        text-align: center;
+        padding: 4rem 1rem;
+        border: 1px dashed #ccc;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        background: #fafafa;
+      "
+    >
+      <p style="color: #666; font-size: 1.1rem; margin: 0">
+        Không có sản phẩm phù hợp tiêu chí tìm kiếm
+      </p>
+    </div>
+  </ng-template>
 
   <!-- Phân trang -->
   <div class="pagination-wrapper" *ngIf="totalProducts > 0">

@@ -73,8 +73,10 @@ h1 {
 
 .admin-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1rem;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  width: 100%;
 }
 
 .card {
@@ -137,6 +139,10 @@ select:focus {
   border: 1px solid transparent;
   cursor: pointer;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .btn-primary {
@@ -160,6 +166,14 @@ select:focus {
   border-color: var(--danger);
   color: var(--danger);
   background: #fff7ed;
+  min-width: 100px;
+}
+
+.action-restore {
+  border-color: #059669;
+  color: #059669;
+  background: #ecfdf5;
+  min-width: 100px;
 }
 
 .list {
@@ -215,6 +229,29 @@ select:focus {
   background: #ecfdf3;
   border-color: #a7f3d0;
   color: #065f46;
+}
+
+.badge-deleted {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* background: #fee2e2 !important; */
+  color: #991b1b !important;
+  /* border-color: #fecaca !important; */
+  padding: 0.2rem 0.2rem;
+  margin: 0.2rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  justify-content: center;
+  /* border: 1px solid; */
+}
+
+@media (max-width: 1024px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {

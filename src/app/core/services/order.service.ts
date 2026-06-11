@@ -3,38 +3,36 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@/environments/environment';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrderService {
-  private baseUrl = environment.apiUrl + '/orders';
+  private baseUrl = environment.apiUrl + '/bills';
 
   constructor(private http: HttpClient) {}
 
-  /** Lấy tất cả đơn hàng */
-  getAll(params: { page?: number; limit?: number; sort?: string }): Observable<any> {
-    const { page = 1, limit, sort = 'createdAt:desc' } = params;
-    const httpParams = new HttpParams()
-      .set('pageNo', page)
-      .set('pageSize', limit || '')
-      .set('sortBy', sort);
-    return this.http.get(`${this.baseUrl}/`, { params: httpParams });
+  /** Lấy tất cả hóa đơn */
+  getAll(params?: any): Observable<any> {
+    return this.http.get(`${this.baseUrl}`, { params });
   }
 
-  /** Lấy tất cả đơn hàng của 1 user */
-  getAllOrderOfUser(params: { page?: number; limit?: number; sort?: string; userId: string }): Observable<any> {
-    const { page = 1, limit, sort = 'createdAt:desc', userId } = params;
-    const httpParams = new HttpParams()
-      .set('pageNo', page)
-      .set('pageSize', limit || '')
-      .set('sortBy', sort)
-      .set('userId', userId);
-    return this.http.get(`${this.baseUrl}/user`, { params: httpParams });
+  /** Lấy tất cả hóa đơn của 1 khách hàng */
+  getBillsByCustomerId(customerId: string | number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/user/${customerId}`);
   }
 
-  /** Lấy đơn hàng theo ID */
-  getById(id: string, userId: string): Observable<any> {
-    const httpParams = new HttpParams().set('userId', userId);
-    return this.http.get(`${this.baseUrl}/${id}`, { params: httpParams });
+  /** Lấy hóa đơn theo ID */
+  getById(id: string | number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${id}`);
+  }
+
+  /** Cập nhật hóa đơn */
+  updateBill(id: string | number, data: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/${id}`, data);
+  }
+
+  /** Xóa hóa đơn */
+  deleteBill(id: string | number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
   /** Gọi API lấy URL thanh toán MoMo */
@@ -51,20 +49,4 @@ export class OrderService {
   verifyVNPAY(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/thanhtoan/vnpay/verify`, data);
   }
-
-  /** Tạo đơn hàng mới */
-  create(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/`, data);
-  }
-
-  /** Cập nhật PaymentId */
-  updatePaymentId(id: string, data: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${id}/paymentId`, data);
-  }
-
-  /** Cập nhật trạng thái đơn hàng */
-  updateOrderStatus(id: string, data: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${id}/order-status`, data);
-  }
 }
-

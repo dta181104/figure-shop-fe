@@ -66,7 +66,7 @@ export class HeaderLayoutComponent implements OnDestroy {
         Array.isArray(roles) &&
         roles.some((r: any) => {
           const code = (r?.code || r?.name || '').toString().toUpperCase();
-          return code === 'ADMIN' || code.includes('ADMIN');
+          return code === 'ADMIN';
         });
     } catch {
       this.isAdmin = false;

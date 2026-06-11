@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   params = {
     pageIndex: 1,
-    pageSize: 12,
+    pageSize: 20,
     keyword: '',
     minPrice: null,
     maxPrice: null,
@@ -66,6 +66,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     const queryParams: any = {
       pageIndex: this.params.pageIndex,
       pageSize: this.params.pageSize,
+      deleted: false,
     };
     if (this.params.keyword) queryParams.keyword = this.params.keyword;
     if (this.params.minPrice) queryParams.minPrice = this.params.minPrice;
@@ -81,7 +82,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.getProductApi = this.productService.getProducts(queryParams).subscribe({
       next: (res) => {
         this.totalProducts = res.result?.totalElements || 0;
-        const content = res.result?.content?.filter((item: any) => item.deleted === false) || [];
+        const content = res.result?.content || [];
         this.products = content.map((item: any) => ({
           id: item.id,
           name: item.name,
@@ -96,6 +97,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   applyFilters() {
+    // Kiểm tra logic: Giá đến phải lớn hơn hoặc bằng giá từ
+    if (
+      this.params.minPrice !== null &&
+      this.params.maxPrice !== null &&
+      this.params.maxPrice < this.params.minPrice
+    ) {
+      alert('Giá đến phải lớn hơn hoặc bằng giá từ. Vui lòng kiểm tra lại!');
+      return;
+    }
     this.params.pageIndex = 1;
     this.loadProducts();
   }
@@ -103,7 +113,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   clearFilters() {
     this.params = {
       pageIndex: 1,
-      pageSize: 12,
+      pageSize: 20,
       keyword: '',
       minPrice: null,
       maxPrice: null,

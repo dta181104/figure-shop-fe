@@ -1,4 +1,137 @@
 <div class="admin-grid">
+  <div class="card">
+    <div class="card-header">
+      <h3>Danh sách sản phẩm</h3>
+    </div>
+
+    <!-- Bộ lọc sản phẩm tương tự trang chủ -->
+    <div class="filter-section" style="padding: 1rem; border-bottom: 1px solid #eee">
+      <div
+        class="filter-grid"
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          gap: 10px;
+        "
+      >
+        <div class="filter-group">
+          <label><small>Tìm kiếm</small></label>
+          <input
+            type="text"
+            [(ngModel)]="filterParams.keyword"
+            placeholder="Tên sản phẩm..."
+            class="form-control-sm"
+          />
+        </div>
+        <div class="filter-group">
+          <label><small>Danh mục</small></label>
+          <select [(ngModel)]="filterParams.categoryId" class="form-control-sm">
+            <option value="">Tất cả</option>
+            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label><small>Giá từ</small></label>
+          <input
+            type="number"
+            [(ngModel)]="filterParams.minPrice"
+            placeholder="Tối thiểu"
+            class="form-control-sm"
+          />
+        </div>
+        <div class="filter-group">
+          <label><small>Đến giá</small></label>
+          <input
+            type="number"
+            [(ngModel)]="filterParams.maxPrice"
+            placeholder="Tối đa"
+            class="form-control-sm"
+          />
+        </div>
+        <div class="filter-group">
+          <label><small>Sắp xếp theo</small></label>
+          <select [(ngModel)]="filterParams.sortBy" class="form-control-sm">
+            <option value="">Mặc định</option>
+            <option value="NAME">Tên</option>
+            <option value="PRICE">Giá</option>
+            <option value="UPDATED_DATE">Ngày cập nhật</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label><small>Thứ tự</small></label>
+          <select [(ngModel)]="filterParams.sortDirection" class="form-control-sm">
+            <option value="ASC">Tăng dần</option>
+            <option value="DESC">Giảm dần</option>
+          </select>
+        </div>
+        <div class="filter-actions" style="display: flex; align-items: flex-end; gap: 8px">
+          <button type="button" class="btn-primary btn-sm" (click)="applyFilters()">
+            Tìm kiếm
+          </button>
+          <button type="button" class="btn-secondary btn-sm" (click)="clearFilters()">
+            Xóa lọc
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <nz-table
+      #productTable
+      [nzData]="products"
+      [nzFrontPagination]="false"
+      [nzLoading]="isProductsLoading"
+      [nzTotal]="totalProducts"
+      [(nzPageIndex)]="pageIndex"
+      [(nzPageSize)]="pageSize"
+      (nzPageIndexChange)="loadProducts()"
+      nzSize="middle"
+    >
+      <thead>
+        <tr>
+          <th nzWidth="60px">STT</th>
+          <th>Tên sản phẩm</th>
+          <th>Giá bán</th>
+          <th>Số lượng</th>
+          <th>Trạng thái</th>
+          <th nzRight>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of productTable.data; let i = index">
+          <td>{{ i + (pageIndex - 1) * pageSize + 1 }}</td>
+          <td>
+            <strong>{{ product.name }}</strong>
+          </td>
+          <td>{{ product.price | number }} đ</td>
+          <td>{{ product.quantity }}</td>
+          <td>
+            <span class="badge-deleted" *ngIf="product.deleted">Đã xóa</span>
+            <span *ngIf="!product.deleted" style="color: #059669; font-weight: 600">Đang bán</span>
+          </td>
+          <td nzRight>
+            <div class="inline-actions">
+              <button class="action-btn action-edit" (click)="editProduct(product)">Sửa</button>
+              <button
+                *ngIf="!product.deleted"
+                class="action-btn action-delete"
+                (click)="deleteProduct(product)"
+              >
+                Xóa
+              </button>
+              <button
+                *ngIf="product.deleted"
+                class="action-btn action-restore"
+                (click)="restoreProduct(product)"
+              >
+                Khôi phục
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
   <form class="card" (ngSubmit)="saveProduct()">
     <h3>{{ editingProductCode ? 'Cập nhật sản phẩm' : 'Tạo sản phẩm mới' }}</h3>
     <label>
@@ -6,48 +139,50 @@
       <input name="productName" [(ngModel)]="productForm.name" required />
     </label>
     <label>
+      <span>Mã sản phẩm</span>
+      <input name="productCode" [(ngModel)]="productForm.code" placeholder="Tự động nếu để trống" />
+    </label>
+    <label>
+      <span>Danh mục</span>
+      <select name="categoryId" [(ngModel)]="productForm.categoryId">
+        <option [value]="''">Chọn danh mục</option>
+        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+      </select>
+    </label>
+    <label>
       <span>Giá</span>
       <input name="productPrice" type="number" [(ngModel)]="productForm.price" required />
     </label>
+    <label>
+      <span>Số lượng</span>
+      <input name="productQty" type="number" [(ngModel)]="productForm.quantity" />
+    </label>
+    <label>
+      <span>Trạng thái</span>
+      <select name="productStatus" [(ngModel)]="productForm.status">
+        <option [value]="1">Hoạt động</option>
+        <option [value]="0">Ngừng kinh doanh</option>
+      </select>
+    </label>
+    <label>
+      <span>Mô tả</span>
+      <textarea name="productDesc" [(ngModel)]="productForm.description" rows="3"></textarea>
+    </label>
+
     <div class="actions">
-      <button type="submit" class="btn-primary" [disabled]="isSavingProduct">Lưu sản phẩm</button>
+      <button type="submit" class="btn-primary" [disabled]="isSavingProduct">
+        {{ editingProductCode ? 'Cập nhật' : 'Lưu sản phẩm' }}
+      </button>
+      <button
+        type="button"
+        class="btn-secondary"
+        *ngIf="editingProductCode"
+        (click)="resetProductForm()"
+      >
+        Hủy
+      </button>
     </div>
   </form>
-
-  <div class="card">
-    <div class="card-header">
-      <h3>Danh sách sản phẩm</h3>
-      <input
-        [(ngModel)]="productQuery"
-        (ngModelChange)="loadProducts()"
-        placeholder="Tìm kiếm sản phẩm..."
-      />
-    </div>
-
-    <ul class="list" *ngIf="!isProductsLoading">
-      <li *ngFor="let product of products">
-        <div>
-          <strong>{{ product.name }}</strong>
-          <small>Giá: {{ product.price | number }} đ</small>
-        </div>
-        <div class="inline-actions">
-          <button class="action-btn action-edit" (click)="editProduct(product)">Sửa</button>
-          <button class="action-btn action-delete" (click)="deleteProduct(product)">Xóa</button>
-        </div>
-      </li>
-    </ul>
-
-    <!-- Phân trang NG-ZORRO -->
-    <div class="pagination-container">
-      <nz-pagination
-        [(nzPageIndex)]="pageIndex"
-        [nzTotal]="totalProducts"
-        [nzPageSize]="pageSize"
-        (nzPageIndexChange)="loadProducts()"
-      >
-      </nz-pagination>
-    </div>
-  </div>
 
   <app-confirm-dialog
     [visible]="confirmVisible"

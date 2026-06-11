@@ -5,14 +5,15 @@ import { finalize } from 'rxjs/operators';
 import { ProductService } from '@/app/core/services/product.service';
 import { CategoryService } from '@/app/core/services/category.service';
 import { ProductItems } from '@/app/core/models/product-item.model';
-import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { ConfirmDialogComponent } from '@/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'app-admin-product',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzPaginationModule, ConfirmDialogComponent],
+  imports: [CommonModule, FormsModule, ConfirmDialogComponent, NzTableModule],
   templateUrl: './admin-product.component.html',
+  styleUrl: '../admin.component.css',
 })
 export class AdminProductComponent implements OnInit {
   private productService = inject(ProductService);
@@ -22,10 +23,30 @@ export class AdminProductComponent implements OnInit {
   categories: any[] = [];
   isProductsLoading = false;
   isSavingProduct = false;
-  productQuery = '';
   editingProductCode = '';
   productMessage = '';
   productError = '';
+  priceError = '';
+
+  // Filters
+  filterParams = {
+    keyword: '',
+    categoryId: '',
+    minPrice: null as number | null,
+    maxPrice: null as number | null,
+    sortBy: '',
+    sortDirection: 'ASC',
+  };
+
+  // Tham số thực tế được dùng để gọi API, chỉ cập nhật khi nhấn nút "Tìm kiếm"
+  appliedFilterParams = {
+    keyword: '',
+    categoryId: '',
+    minPrice: null as number | null,
+    maxPrice: null as number | null,
+    sortBy: '',
+    sortDirection: 'ASC',
+  };
 
   // Pagination
   pageIndex = 1;
@@ -47,6 +68,7 @@ export class AdminProductComponent implements OnInit {
     price: null as number | null,
     quantity: null as number | null,
     status: 1,
+    categoryId: null as number | null,
   };
 
   ngOnInit(): void {
@@ -65,18 +87,53 @@ export class AdminProductComponent implements OnInit {
     const query = {
       pageIndex: this.pageIndex,
       pageSize: this.pageSize,
-      keyword: this.productQuery,
+      keyword: this.appliedFilterParams.keyword,
+      categoryId: this.appliedFilterParams.categoryId,
+      minPrice: this.appliedFilterParams.minPrice,
+      maxPrice: this.appliedFilterParams.maxPrice,
+      sortBy: this.appliedFilterParams.sortBy,
+      sortDirection: this.appliedFilterParams.sortDirection,
     };
     this.productService
       .getProducts(query)
       .pipe(finalize(() => (this.isProductsLoading = false)))
       .subscribe({
         next: (res: any) => {
-          this.products = res?.result?.content?.filter((p: any) => !p.deleted) || [];
+          this.products = res?.result?.content || [];
           this.totalProducts = res?.result?.totalElements || 0;
         },
         error: () => (this.productError = 'Không tải được sản phẩm.'),
       });
+  }
+
+  applyFilters(): void {
+    // Kiểm tra logic: Giá đến phải lớn hơn hoặc bằng giá từ
+    if (
+      this.filterParams.minPrice !== null &&
+      this.filterParams.maxPrice !== null &&
+      this.filterParams.maxPrice < this.filterParams.minPrice
+    ) {
+      this.priceError = 'Giá đến phải lớn hơn hoặc bằng giá từ';
+      return;
+    }
+    this.priceError = '';
+    this.appliedFilterParams = { ...this.filterParams };
+    this.pageIndex = 1;
+    this.loadProducts();
+  }
+
+  clearFilters(): void {
+    this.priceError = '';
+    this.filterParams = {
+      keyword: '',
+      categoryId: '',
+      minPrice: null,
+      maxPrice: null,
+      sortBy: '',
+      sortDirection: 'ASC',
+    };
+    this.appliedFilterParams = { ...this.filterParams };
+    this.loadProducts();
   }
 
   saveProduct(): void {
@@ -111,6 +168,7 @@ export class AdminProductComponent implements OnInit {
       price: Number(this.productForm.price),
       quantity: this.productForm.quantity !== null ? Number(this.productForm.quantity) : undefined,
       status: Number(this.productForm.status),
+      categoryId: this.productForm.categoryId || undefined,
     };
 
     this.productService
@@ -140,6 +198,7 @@ export class AdminProductComponent implements OnInit {
       price: Number(this.productForm.price),
       quantity: this.productForm.quantity !== null ? Number(this.productForm.quantity) : undefined,
       status: Number(this.productForm.status),
+      categoryId: this.productForm.categoryId || undefined,
     };
 
     this.productService
@@ -166,6 +225,7 @@ export class AdminProductComponent implements OnInit {
       price: product.price || null,
       quantity: product.quantity || null,
       status: product.status || 1,
+      categoryId: (product as any).category?.id || (product as any).categoryId || null,
     };
   }
 
@@ -181,6 +241,22 @@ export class AdminProductComponent implements OnInit {
     });
   }
 
+  restoreProduct(product: ProductItems): void {
+    this.openConfirm({
+      title: 'Xác nhận khôi phục',
+      message: `Bạn có chắc chắn muốn khôi phục sản phẩm ${product.name}?`,
+      confirmText: 'Khôi phục',
+      variant: 'primary',
+      action: () => {
+        // Giả sử API update hỗ trợ chuyển trạng thái deleted hoặc có endpoint riêng
+        this.productService.updateProduct(product.code!, { deleted: false } as any).subscribe({
+          next: () => this.loadProducts(),
+          error: (err) => (this.productError = 'Không thể khôi phục sản phẩm.'),
+        });
+      },
+    });
+  }
+
   resetProductForm(): void {
     this.editingProductCode = '';
     this.productForm = {
@@ -190,6 +266,7 @@ export class AdminProductComponent implements OnInit {
       price: null,
       quantity: null,
       status: 1,
+      categoryId: null as number | null,
     };
   }
 

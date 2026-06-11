@@ -23,6 +23,9 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([customInterceptor]) // gộp fetch + interceptor
     ),
-    importProvidersFrom(FormsModule, ReactiveFormsModule), provideNzI18n(en_US), importProvidersFrom(FormsModule), provideAnimationsAsync(), provideHttpClient(),
+    importProvidersFrom(FormsModule, ReactiveFormsModule),
+    provideNzI18n(en_US),
+    importProvidersFrom(FormsModule),
+    provideAnimationsAsync(),
   ],
 };

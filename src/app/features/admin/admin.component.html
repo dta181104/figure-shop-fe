@@ -9,14 +9,37 @@
 
   <ng-container *ngIf="!forbiddenMessage">
     <nav class="admin-nav" aria-label="Admin modules">
-      <a routerLink="/admin/users" class="tab-btn" [class.active]="activeTab === 'users'">
+      <a
+        routerLink="/admin/users"
+        (click)="activeTab = 'users'"
+        class="tab-btn"
+        [class.active]="activeTab === 'users'"
+      >
         Quản lý người dùng
       </a>
-      <a routerLink="/admin/products" class="tab-btn" [class.active]="activeTab === 'products'">
+      <a
+        routerLink="/admin/roles"
+        (click)="activeTab = 'roles'"
+        class="tab-btn"
+        [class.active]="activeTab === 'roles'"
+      >
+        Quản lý vai trò
+      </a>
+      <a
+        routerLink="/admin/products"
+        (click)="activeTab = 'products'"
+        class="tab-btn"
+        [class.active]="activeTab === 'products'"
+      >
         Quản lý sản phẩm
       </a>
-      <a routerLink="/admin/roles" class="tab-btn" [class.active]="activeTab === 'roles'">
-        Quản lý quyền
+      <a
+        routerLink="/admin/orders"
+        (click)="activeTab = 'orders'"
+        class="tab-btn"
+        [class.active]="activeTab === 'orders'"
+      >
+        Quản lý đơn hàng
       </a>
     </nav>
 
@@ -25,6 +48,7 @@
       <app-admin-user *ngIf="activeTab === 'users'"></app-admin-user>
       <app-admin-product *ngIf="activeTab === 'products'"></app-admin-product>
       <app-admin-role *ngIf="activeTab === 'roles'"></app-admin-role>
+      <app-admin-order *ngIf="activeTab === 'orders'"></app-admin-order>
     </div>
   </ng-container>
 </section>

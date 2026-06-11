@@ -11,8 +11,9 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 import { AdminUserComponent } from './admin-user/admin-user.component';
 import { AdminProductComponent } from './admin-product/admin-product.component';
 import { AdminRoleComponent } from './admin-role/admin-role.component';
+import { AdminOrderComponent } from './admin-order/admin-order.component';
 
-type TabKey = 'users' | 'products' | 'roles';
+type TabKey = 'users' | 'products' | 'roles' | 'orders';
 
 @Component({
   selector: 'app-admin',
@@ -24,6 +25,7 @@ type TabKey = 'users' | 'products' | 'roles';
     AdminUserComponent,
     AdminProductComponent,
     AdminRoleComponent,
+    AdminOrderComponent,
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
@@ -42,12 +44,17 @@ export class AdminComponent implements OnInit {
 
   ngOnInit(): void {
     const routeTab = this.route.snapshot.data['tab'];
-    if (routeTab === 'users' || routeTab === 'products' || routeTab === 'roles') {
+    if (
+      routeTab === 'users' ||
+      routeTab === 'products' ||
+      routeTab === 'roles' ||
+      routeTab === 'orders'
+    ) {
       this.activeTab = routeTab;
     }
     this.isBrowser = isPlatformBrowser(this.platformId);
     if (!this.isBrowser) {
-      this.forbiddenMessage = 'Không thể truy cập khu vực quản trị ơ môi trường hiện tại.';
+      this.forbiddenMessage = 'Bạn không có quyền truy cập trang quản trị.';
       return;
     }
 
@@ -72,7 +79,7 @@ export class AdminComponent implements OnInit {
       },
       error: (err: any) => {
         const status = err?.status || 'unknown';
-        this.forbiddenMessage = `[${status}] Không xác thực được qUyền quản trị. Vui lòng đăng nhập lại.`;
+        this.forbiddenMessage = `[${status}] Không xác thực được quyền quản trị. Vui lòng đăng nhập lại.`;
       },
     });
   }
@@ -90,7 +97,7 @@ export class AdminComponent implements OnInit {
         )
           .toString()
           .toUpperCase();
-        return code === 'ADMIN' || code.includes('ADMIN');
+        return code === 'ADMIN';
       })
     );
   }

@@ -9,7 +9,7 @@ export interface Product {
   weight?: number;
   quantity?: number;
   price: number;
-  category_id?: number;
+  categoryId?: number;
   deleted?: boolean;
   createdDate?: string;
   updatedDate?: string;

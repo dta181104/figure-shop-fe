@@ -1,4 +1,78 @@
 <div class="admin-grid">
+  <div class="card">
+    <div class="card-header">
+      <h3>Danh sách người dùng</h3>
+      <input [(ngModel)]="userQuery" (ngModelChange)="loadUsers()" placeholder="Tìm kiếm..." />
+    </div>
+
+    <nz-table
+      #userTable
+      [nzData]="users"
+      [nzFrontPagination]="false"
+      [nzLoading]="isUsersLoading"
+      [nzTotal]="totalUsers"
+      [(nzPageIndex)]="pageIndex"
+      [(nzPageSize)]="pageSize"
+      (nzPageIndexChange)="loadUsers()"
+      nzSize="middle"
+    >
+      <thead>
+        <tr>
+          <th nzWidth="60px">STT</th>
+          <th>Username</th>
+          <th>SĐT</th>
+          <th>Email</th>
+          <th>Địa chỉ</th>
+          <th>Trạng thái</th>
+          <th nzRight>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of userTable.data; let i = index">
+          <td>{{ i + (pageIndex - 1) * pageSize + 1 }}</td>
+          <td>
+            <strong>{{ user.username }}</strong>
+            <div class="muted">
+              <small>{{ user.name }}</small>
+            </div>
+          </td>
+          <td>{{ user.phone || '---' }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ $any(user).address || '---' }}</td>
+          <td>
+            <span *ngIf="$any(user).deleted" class="badge-deleted">Đã xóa</span>
+            <span *ngIf="!$any(user).deleted" style="color: #059669; font-weight: 600"
+              >Hoạt động</span
+            >
+          </td>
+          <td nzRight>
+            <div class="inline-actions">
+              <button class="action-btn action-edit" (click)="editUser(user)" title="Sửa">
+                Sửa
+              </button>
+              <button
+                *ngIf="!$any(user).deleted"
+                class="action-btn action-delete"
+                (click)="deleteUser(user)"
+                title="Xóa"
+              >
+                Xóa
+              </button>
+              <button
+                *ngIf="$any(user).deleted"
+                class="action-btn action-restore"
+                (click)="restoreUser(user)"
+                title="Khôi phục"
+              >
+                Khôi phục
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
   <form class="card" (ngSubmit)="saveUser()">
     <h3>{{ editingUserCode ? 'Cập nhật người dùng' : 'Tạo người dùng mới' }}</h3>
     <label>
@@ -23,6 +97,22 @@
       <input name="email" [(ngModel)]="userForm.email" type="email" />
     </label>
     <label>
+      <span>Vai trò</span>
+      <nz-select
+        name="role"
+        [(ngModel)]="userForm.role"
+        nzMode="multiple"
+        nzPlaceHolder="Chọn vai trò"
+        [nzShowSearch]="true"
+        [nzAllowClear]="true"
+        [nzServerSearch]="false"
+      >
+        <nz-option [nzValue]="1" nzLabel="ADMIN"></nz-option>
+        <nz-option [nzValue]="2" nzLabel="USER"></nz-option>
+        <nz-option [nzValue]="3" nzLabel="STAFF"></nz-option>
+      </nz-select>
+    </label>
+    <label>
       <span>Trạng thái</span>
       <select name="status" [(ngModel)]="userForm.status">
         <option value="ACTIVE">ACTIVE</option>
@@ -31,38 +121,20 @@
     </label>
     <div class="actions">
       <button type="submit" class="btn-primary" [disabled]="isSavingUser">Lưu</button>
+      <button type="button" class="btn-secondary" *ngIf="editingUserCode" (click)="resetUserForm()">
+        Hủy
+      </button>
     </div>
   </form>
 
-  <div class="card">
-    <div class="card-header">
-      <h3>Danh sách người dùng</h3>
-      <input [(ngModel)]="userQuery" (ngModelChange)="loadUsers()" placeholder="Tìm kiếm..." />
-    </div>
-
-    <ul class="list" *ngIf="!isUsersLoading">
-      <li *ngFor="let user of users">
-        <div>
-          <strong>{{ user.username }}</strong>
-          <p>{{ user.name }}</p>
-          <small>{{ user.email }}</small>
-        </div>
-        <div class="inline-actions">
-          <button class="action-btn action-edit" (click)="editUser(user)">Sửa</button>
-          <button class="action-btn action-delete" (click)="deleteUser(user)">Xóa</button>
-        </div>
-      </li>
-    </ul>
-
-    <!-- Phân trang NG-ZORRO -->
-    <div class="pagination-container">
-      <nz-pagination
-        [(nzPageIndex)]="pageIndex"
-        [nzTotal]="totalUsers"
-        [nzPageSize]="pageSize"
-        (nzPageIndexChange)="loadUsers()"
-      >
-      </nz-pagination>
-    </div>
-  </div>
+  <app-confirm-dialog
+    [visible]="confirmVisible"
+    [title]="confirmTitle"
+    [message]="confirmMessage"
+    [confirmText]="confirmText"
+    cancelText="Hủy"
+    [variant]="confirmVariant"
+    (confirm)="confirmActionNow()"
+    (cancel)="closeConfirm()"
+  ></app-confirm-dialog>
 </div>

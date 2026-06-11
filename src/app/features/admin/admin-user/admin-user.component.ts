@@ -4,13 +4,23 @@ import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { AdminService, AdminUser } from '@/app/core/services/admin.service';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '@/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'app-admin-user',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzPaginationModule, ConfirmDialogComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    NzPaginationModule,
+    ConfirmDialogComponent,
+    NzSelectModule,
+    NzTableModule,
+  ],
   templateUrl: './admin-user.component.html',
+  styleUrl: '../admin.component.css',
 })
 export class AdminUserComponent implements OnInit {
   private adminService = inject(AdminService);
@@ -43,6 +53,7 @@ export class AdminUserComponent implements OnInit {
     email: '',
     phone: '',
     status: 'ACTIVE',
+    role: [] as number[],
   };
 
   ngOnInit(): void {
@@ -88,6 +99,7 @@ export class AdminUserComponent implements OnInit {
       email: this.userForm.email,
       phone: this.userForm.phone,
       status: this.userForm.status,
+      roles: this.userForm.role,
     };
     this.adminService
       .updateAccount(this.editingUserCode, payload)
@@ -110,7 +122,8 @@ export class AdminUserComponent implements OnInit {
         pass: this.userForm.password,
         name: this.userForm.name,
         email: this.userForm.email,
-      })
+        roles: this.userForm.role,
+      } as any)
       .pipe(finalize(() => (this.isSavingUser = false)))
       .subscribe({
         next: () => {
@@ -131,7 +144,23 @@ export class AdminUserComponent implements OnInit {
       email: user.email || '',
       phone: user.phone || '',
       status: (user.status?.toString() || 'ACTIVE').toUpperCase(),
+      role: this.mapRolesToIds((user as any).roles),
     };
+  }
+
+  private mapRolesToIds(roles: any): number[] {
+    const rolesArray = Array.isArray(roles) ? roles : roles ? [roles] : [];
+    return rolesArray
+      .map((r: any) => {
+        const val = (typeof r === 'object' ? r.id || r.code || r.name || '' : r)
+          .toString()
+          .toUpperCase();
+        if (val === 'ADMIN' || val === '1') return 1;
+        if (val === 'USER' || val === '2') return 2;
+        if (val === 'STAFF' || val === '3') return 3;
+        return null;
+      })
+      .filter((v: any) => v !== null) as number[];
   }
 
   deleteUser(user: AdminUser): void {
@@ -146,6 +175,16 @@ export class AdminUserComponent implements OnInit {
     });
   }
 
+  restoreUser(user: AdminUser): void {
+    this.adminService.updateAccount(user.code!, { ...user, deleted: false } as any).subscribe({
+      next: () => {
+        this.userMessage = 'Khôi phục tài khoản thành công.';
+        this.loadUsers();
+      },
+      error: () => (this.userError = 'Khôi phục thất bại.'),
+    });
+  }
+
   resetUserForm(): void {
     this.editingUserCode = '';
     this.userForm = {
@@ -155,6 +194,7 @@ export class AdminUserComponent implements OnInit {
       email: '',
       phone: '',
       status: 'ACTIVE',
+      role: [],
     };
   }
 

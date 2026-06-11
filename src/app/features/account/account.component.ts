@@ -131,10 +131,10 @@ export class AccountComponent implements OnInit {
         };
 
         this.isAdmin = this.hasAdminRole(this.profile?.roles || []);
-        
+
         // Update local storage to keep data consistent
         localStorage.setItem('user_profile', JSON.stringify(this.profile));
-        
+
         this.isLoading = false;
       },
       error: () => {
@@ -149,7 +149,7 @@ export class AccountComponent implements OnInit {
       Array.isArray(roles) &&
       roles.some((role) => {
         const code = (role?.code || role?.name || '').toString().toUpperCase();
-        return code === 'ADMIN' || code.includes('ADMIN');
+        return code === 'ADMIN';
       })
     );
   }
@@ -158,7 +158,7 @@ export class AccountComponent implements OnInit {
     this.isEditing = !this.isEditing;
     this.updateSuccess = '';
     this.apiError = '';
-    
+
     if (this.isEditing && this.profile) {
       this.updateForm.patchValue({
         name: this.profile.name || this.profile.username || '',
@@ -187,21 +187,21 @@ export class AccountComponent implements OnInit {
         this.isUpdating = false;
         this.isEditing = false;
         this.updateSuccess = 'Cập nhật thông tin thành công!';
-        
+
         if (res.result) {
-           this.profile = {
-             ...this.profile,
-             ...res.result
-           };
+          this.profile = {
+            ...this.profile,
+            ...res.result,
+          };
         } else {
-           this.profile = {
-             ...this.profile,
-             ...payload
-           };
+          this.profile = {
+            ...this.profile,
+            ...payload,
+          };
         }
 
         localStorage.setItem('user_profile', JSON.stringify(this.profile));
-        
+
         // Hide success message after 3 seconds
         setTimeout(() => {
           this.updateSuccess = '';
@@ -210,7 +210,7 @@ export class AccountComponent implements OnInit {
       error: (err) => {
         this.isUpdating = false;
         this.apiError = err?.error?.message || 'Có lỗi xảy ra khi cập nhật thông tin.';
-      }
+      },
     });
   }
 }

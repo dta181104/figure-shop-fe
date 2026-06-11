@@ -30,6 +30,9 @@ const loadPaymentResultComponent = () =>
 const loadAccountComponent = () =>
   import('./features/account/account.component').then((m) => m.AccountComponent);
 
+const loadOrderHistoryComponent = () =>
+  import('./features/order-history/order-history.component').then((m) => m.OrderHistoryComponent);
+
 const loadAdminComponent = () =>
   import('./features/admin/admin.component').then((m) => m.AdminComponent);
 
@@ -54,6 +57,10 @@ export const routes: Routes = [
     loadComponent: loadAccountComponent,
   },
   {
+    path: 'order-history',
+    loadComponent: loadOrderHistoryComponent,
+  },
+  {
     path: 'admin',
     redirectTo: 'admin/users',
     pathMatch: 'full',
@@ -64,9 +71,19 @@ export const routes: Routes = [
     data: { tab: 'users' },
   },
   {
+    path: 'admin/roles',
+    loadComponent: loadAdminComponent,
+    data: { tab: 'roles' },
+  },
+  {
     path: 'admin/products',
     loadComponent: loadAdminComponent,
     data: { tab: 'products' },
+  },
+  {
+    path: 'admin/orders',
+    loadComponent: loadAdminComponent,
+    data: { tab: 'orders' },
   },
   {
     path: 'cart',

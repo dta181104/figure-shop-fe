@@ -1,0 +1,143 @@
+<div class="admin-grid">
+  <div class="card">
+    <div class="card-header">
+      <h3>Quản lý đơn hàng</h3>
+    </div>
+
+    <!-- Bộ lọc đơn hàng -->
+    <div class="filter-section" style="padding: 1rem; border-bottom: 1px solid #eee">
+      <div
+        class="filter-grid"
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          gap: 10px;
+        "
+      >
+        <div class="filter-group">
+          <label><small>Tìm kiếm</small></label>
+          <input
+            type="text"
+            [(ngModel)]="filterParams.keyword"
+            placeholder="Mã đơn, tên khách..."
+            class="form-control-sm"
+          />
+        </div>
+        <div class="filter-group">
+          <label><small>Trạng thái</small></label>
+          <select [(ngModel)]="filterParams.status" class="form-control-sm">
+            <option value="">Tất cả trạng thái</option>
+            <option value="PENDING">Chờ xác nhận</option>
+            <option value="CONFIRMED">Đã xác nhận</option>
+            <option value="SHIPPING">Đang giao hàng</option>
+            <option value="DELIVERED">Đã giao</option>
+            <option value="CANCELLED">Đã hủy</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label><small>Từ ngày</small></label>
+          <input type="date" [(ngModel)]="filterParams.fromDate" class="form-control-sm" />
+        </div>
+        <div class="filter-group">
+          <label><small>Đến ngày</small></label>
+          <input type="date" [(ngModel)]="filterParams.toDate" class="form-control-sm" />
+        </div>
+        <div class="filter-actions" style="display: flex; align-items: flex-end; gap: 8px">
+          <button type="button" class="btn-primary btn-sm" (click)="applyFilters()">Lọc đơn</button>
+          <button type="button" class="btn-secondary btn-sm" (click)="clearFilters()">
+            Xóa lọc
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <nz-table
+      #orderTable
+      [nzData]="orders"
+      [nzFrontPagination]="false"
+      [nzLoading]="isLoading"
+      [nzTotal]="totalOrders"
+      [(nzPageIndex)]="pageIndex"
+      [(nzPageSize)]="pageSize"
+      (nzPageIndexChange)="loadOrders()"
+      nzSize="middle"
+    >
+      <thead>
+        <tr>
+          <th nzWidth="60px">STT</th>
+          <th>Mã đơn hàng</th>
+          <th>Khách hàng</th>
+          <th>Tổng tiền</th>
+          <th>Ngày đặt</th>
+          <th>Trạng thái</th>
+          <th nzRight>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orderTable.data; let i = index">
+          <td>{{ i + (pageIndex - 1) * pageSize + 1 }}</td>
+          <td>
+            <strong>#{{ order.code }}</strong>
+          </td>
+          <td>
+            <div>{{ order.customerName }}</div>
+            <small class="muted">{{ order.phone }}</small>
+          </td>
+          <td style="color: #be123c; font-weight: 600">{{ order.totalPrice | number }} đ</td>
+          <td>{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <span [ngClass]="'status-badge status-' + order.status.toLowerCase()">
+              {{ getStatusLabel(order.status) }}
+            </span>
+          </td>
+          <td nzRight>
+            <div class="inline-actions">
+              <button class="action-btn action-edit" (click)="viewDetail(order)">Chi tiết</button>
+              <button
+                *ngIf="order.status === 'PENDING'"
+                class="action-btn action-restore"
+                (click)="updateStatus(order, 'CONFIRMED')"
+              >
+                Xác nhận
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<style>
+  .status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .status-pending {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .status-confirmed {
+    background: #dcfce7;
+    color: #166534;
+  }
+  .status-shipping {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+  .status-delivered {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #15803d;
+  }
+  .status-cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  .muted {
+    color: #6b7280;
+    font-size: 11px;
+  }
+</style>

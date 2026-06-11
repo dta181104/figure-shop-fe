@@ -29,6 +29,7 @@
 
         <div class="account-dropdown" *ngIf="showAccountDropdown">
           <a routerLink="/account" (click)="showAccountDropdown = false">Quản lý tài khoản</a>
+          <a routerLink="/order-history" (click)="showAccountDropdown = false">Lịch sử đặt hàng</a>
           <a *ngIf="isAdmin" routerLink="/admin" (click)="showAccountDropdown = false"
             >Quản trị hệ thống</a
           >

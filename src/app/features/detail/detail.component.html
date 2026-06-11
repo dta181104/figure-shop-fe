@@ -4,7 +4,7 @@
     <img [src]="selectedImageUrl || getMainImage()" [alt]="product.name" class="main-image" />
 
     <!-- Thumbnail nếu có nhiều ảnh -->
-    <div *ngIf="hasMultipleImages" class="thumbnail-list">
+    <!-- <div *ngIf="hasMultipleImages" class="thumbnail-list">
       <img
         *ngFor="let img of product.images"
         [src]="img.imageUrl"
@@ -13,7 +13,7 @@
         class="thumbnail"
         (click)="onThumbnailClick(img.imageUrl!)"
       />
-    </div>
+    </div> -->
   </div>
 
   <!-- Thông tin sản phẩm -->

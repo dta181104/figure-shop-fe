@@ -42,7 +42,7 @@ export class AdminService {
     return this.http.get<ApiResponse<any>>('users/myInfo');
   }
 
-  getAccounts(pageIndex: number = 1, pageSize: number = 10, keyword?: string): Observable<ApiResponse<PaginatedResult<AdminUser>>> {
+  getAccounts(pageIndex: number = 1, pageSize: number = 20, keyword?: string): Observable<ApiResponse<PaginatedResult<AdminUser>>> {
     let params = new HttpParams()
       .set('pageIndex', pageIndex.toString())
       .set('pageSize', pageSize.toString());
