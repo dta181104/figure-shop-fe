@@ -22,14 +22,29 @@
     <p class="product-description">{{ product.description }}</p>
 
     <ul class="product-meta">
-      <li><strong>Code:</strong> {{ product.code }}</li>
-      <li><strong>Số lượng:</strong> {{ product.quantity }}</li>
+      <!-- <li><strong>Code:</strong> {{ product.code }}</li> -->
+      <li><strong>Kho:</strong> {{ product.quantity }}</li>
+      <li><strong>Chiều cao:</strong> {{ product.height }} cm</li>
+      <li><strong>Cân nặng:</strong> {{ product.weight }} g</li>
     </ul>
 
     <h3 class="price">{{ product.price | number: '1.0-0' }} đ</h3>
 
     <!-- Nút thêm vào giỏ hàng -->
     <button class="add-cart-btn" (click)="addToCart()">Thêm vào giỏ hàng</button>
+  </div>
+
+  <div class="viewer-container">
+    <p>Ảnh 3D của sản phẩm</p>
+    <!-- Sử dụng Property Binding [src] của Angular để truyền đường dẫn động từ file TS -->
+    <model-viewer
+      [src]="modelUrl"
+      alt="Mô hình ảnh 3D"
+      auto-rotate
+      camera-controls
+      shadow-intensity="1"
+    >
+    </model-viewer>
   </div>
 </div>
 

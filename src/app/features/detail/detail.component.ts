@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef  } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductItems } from '@/app/core/models/product-item.model';
@@ -13,6 +13,7 @@ import { NotificationService } from '@/app/core/services/notification.service';
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.css'],
   imports: [CommonModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class DetailComponent implements OnInit {
   product?: ProductItems;
@@ -25,6 +26,12 @@ export class DetailComponent implements OnInit {
     private cartService: CartService,
     private notificationService: NotificationService
   ) {}
+
+  // Đường dẫn trỏ tới file mô hình nằm trong thư mục assets
+  public modelUrl: string = 'assets/images/gundam_unicorn.glb';
+
+  // Lấy đối tượng model-viewer từ giao diện để xử lý trong code TS nếu cần
+  @ViewChild('viewer', { static: false }) viewerRef!: ElementRef;
 
   ngOnInit(): void {
     // Lắng nghe thay đổi param id

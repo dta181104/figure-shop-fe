@@ -1,115 +1,66 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzTagModule } from 'ng-zorro-antd/tag';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzSelectModule } from 'ng-zorro-antd/select';
 import { OrderService } from '../../core/services/order.service';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-order-history',
-  templateUrl: './order-history.component.html',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    NzTableModule,
-    NzTagModule,
-    NzButtonModule,
-    NzInputModule,
-    NzSelectModule,
-  ],
-  styles: [
-    `
-      .order-history-container {
-        padding: 24px;
-        max-width: 1200px;
-        margin: 0 auto;
-        min-height: 70vh;
-      }
-      .page-title {
-        font-size: 24px;
-        font-weight: 600;
-        margin-bottom: 20px;
-      }
-      .filter-section {
-        margin-bottom: 20px;
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-    `,
-  ],
+  imports: [CommonModule],
+  templateUrl: './order-history.component.html',
 })
 export class OrderHistoryComponent implements OnInit {
-  private orderService = inject(OrderService);
-
   orders: any[] = [];
-  totalOrders = 0;
-  pageIndex = 1;
-  pageSize = 10;
   isLoading = false;
 
-  filterParams = {
-    status: '',
-  };
+  constructor(
+    private orderService: OrderService,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
-    this.loadOrders();
+    this.loadUserAndOrders();
   }
 
-  loadOrders(): void {
+  loadUserAndOrders(): void {
     this.isLoading = true;
-    const params = {
-      page: this.pageIndex - 1,
-      size: this.pageSize,
-      status: this.filterParams.status,
-    };
-
-    this.orderService.getAll(params).subscribe({
-      next: (res: any) => {
-        // Kiểm tra nếu API trả về List trực tiếp thay vì đối tượng Page (phù hợp với BillController hiện tại)
-        if (Array.isArray(res?.result)) {
-          this.orders = res.result;
-          this.totalOrders = res.result.length;
-        } else {
-          this.orders = res?.result?.content || [];
-          this.totalOrders = res?.result?.totalElements || 0;
-        }
-        this.isLoading = false;
+    // Bước 1: Lấy thông tin User đang đăng nhập
+    this.userService.getMyInfo().subscribe({
+      next: (userRes) => {
+        const userId = userRes.result.id;
+        // Bước 2: Lấy danh sách đơn hàng theo Customer ID
+        this.orderService.getBillsByCustomerId(userId).subscribe({
+          next: (orderRes) => {
+            this.orders = orderRes.result?.content || [];
+            this.isLoading = false;
+          },
+          error: () => this.isLoading = false
+        });
       },
-      error: () => {
-        this.isLoading = false;
-      },
+      error: () => this.isLoading = false
     });
   }
 
   getStatusLabel(status: string): string {
-    const labels: { [key: string]: string } = {
-      PENDING: 'Chờ xác nhận',
-      CONFIRMED: 'Đã xác nhận',
-      SHIPPING: 'Đang giao hàng',
-      DELIVERED: 'Đã giao',
-      CANCELLED: 'Đã hủy',
+    const statusMap: { [key: string]: string } = {
+      '1': 'Chờ xác nhận',
+      '2': 'Đã xác nhận',
+      '3': 'Đang giao hàng',
+      '4': 'Hoàn thành',
+      '5': 'Đã hủy'
     };
-    return labels[status] || status;
+    return statusMap[status] || 'Đã xác nhận';
   }
 
-  getStatusColor(status: string): string {
-    const colors: { [key: string]: string } = {
-      PENDING: 'warning',
-      CONFIRMED: 'blue',
-      SHIPPING: 'processing',
-      DELIVERED: 'success',
-      CANCELLED: 'error',
-    };
-    return colors[status] || 'default';
-  }
-
-  viewDetail(order: any): void {
-    console.log('Xem chi tiết đơn hàng:', order.id);
-    // Thêm logic điều hướng đến trang chi tiết hoặc mở modal ở đây
+  cancelOrder(orderId: number): void {
+    if (confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) {
+      this.orderService.updateBill(orderId, { status: 'CANCELLED' }).subscribe({
+        next: () => {
+          alert('Hủy đơn hàng thành công');
+          this.loadUserAndOrders();
+        },
+        error: (err) => alert('Lỗi khi hủy đơn: ' + err.message)
+      });
+    }
   }
 }

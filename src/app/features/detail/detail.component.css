@@ -41,10 +41,10 @@
     box-shadow 0.3s ease;
 }
 
-.main-image:hover {
+/* .main-image:hover {
   transform: scale(1.02);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-}
+} */
 
 /* Thumbnail */
 .thumbnail-list {
@@ -211,4 +211,29 @@
   .info-section {
     flex: 1 1 100%;
   }
+}
+
+/* Container cho ảnh 3D */
+.viewer-container {
+  width: 100%;
+  border: 1px solid #e8eef5; /* Viền đen nhạt hơn cho hợp với thiết kế chung */
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  margin-top: 20px;
+}
+
+.viewer-container p {
+  text-align: center; /* Căn giữa tiêu đề */
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1f3a;
+  margin-bottom: 15px;
+}
+
+.viewer-container model-viewer {
+  width: 100%; /* Chiếm toàn bộ chiều rộng của cha */
+  height: 500px; /* Đặt một chiều cao cụ thể */
+  border-radius: 8px;
 }

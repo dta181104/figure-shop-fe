@@ -33,8 +33,8 @@ export class AdminOrderComponent implements OnInit {
   loadOrders(): void {
     this.isLoading = true;
     const params = {
-      page: this.pageIndex - 1,
-      size: this.pageSize,
+      pageIndex: this.pageIndex - 1,
+      pageSize: this.pageSize,
       ...this.filterParams,
     };
 
@@ -68,14 +68,14 @@ export class AdminOrderComponent implements OnInit {
   }
 
   getStatusLabel(status: string): string {
-    const labels: { [key: string]: string } = {
-      PENDING: 'Chờ xác nhận',
-      CONFIRMED: 'Đã xác nhận',
-      SHIPPING: 'Đang giao hàng',
-      DELIVERED: 'Đã giao',
-      CANCELLED: 'Đã hủy',
+    const statusMap: { [key: string]: string } = {
+      '1': 'Chờ xác nhận',
+      '2': 'Đã xác nhận',
+      '3': 'Đang giao hàng',
+      '4': 'Hoàn thành',
+      '5': 'Đã hủy'
     };
-    return labels[status] || status;
+    return statusMap[status] || 'Đã xác nhận';
   }
 
   viewDetail(order: any): void {

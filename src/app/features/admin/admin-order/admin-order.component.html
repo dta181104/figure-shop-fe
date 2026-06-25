@@ -27,11 +27,11 @@
           <label><small>Trạng thái</small></label>
           <select [(ngModel)]="filterParams.status" class="form-control-sm">
             <option value="">Tất cả trạng thái</option>
-            <option value="PENDING">Chờ xác nhận</option>
-            <option value="CONFIRMED">Đã xác nhận</option>
-            <option value="SHIPPING">Đang giao hàng</option>
-            <option value="DELIVERED">Đã giao</option>
-            <option value="CANCELLED">Đã hủy</option>
+            <option value="1">Chờ xác nhận</option>
+            <option value="2">Đã xác nhận</option>
+            <option value="3">Đang giao hàng</option>
+            <option value="4">Hoàn thành</option>
+            <option value="5">Đã hủy</option>
           </select>
         </div>
         <div class="filter-group">
@@ -83,8 +83,8 @@
             <div>{{ order.customerName }}</div>
             <small class="muted">{{ order.phone }}</small>
           </td>
-          <td style="color: #be123c; font-weight: 600">{{ order.totalPrice | number }} đ</td>
-          <td>{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td style="color: #be123c; font-weight: 600">{{ order.totalMoney | number }} đ</td>
+          <td>{{ order.createdDate | date: 'dd/MM/yyyy HH:mm' }}</td>
           <td>
             <span [ngClass]="'status-badge status-' + order.status.toLowerCase()">
               {{ getStatusLabel(order.status) }}
@@ -94,7 +94,7 @@
             <div class="inline-actions">
               <button class="action-btn action-edit" (click)="viewDetail(order)">Chi tiết</button>
               <button
-                *ngIf="order.status === 'PENDING'"
+                *ngIf="order.status === '1'"
                 class="action-btn action-restore"
                 (click)="updateStatus(order, 'CONFIRMED')"
               >

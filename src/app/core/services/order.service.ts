@@ -10,6 +10,11 @@ export class OrderService {
 
   constructor(private http: HttpClient) {}
 
+  /** Tạo mới một hóa đơn */
+  createBill(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}`, data);
+  }
+
   /** Lấy tất cả hóa đơn */
   getAll(params?: any): Observable<any> {
     return this.http.get(`${this.baseUrl}`, { params });

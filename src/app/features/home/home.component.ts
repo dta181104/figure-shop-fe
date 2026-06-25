@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   params = {
     pageIndex: 1,
-    pageSize: 20,
+    pageSize: 12,
     keyword: '',
     minPrice: null,
     maxPrice: null,
@@ -113,7 +113,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   clearFilters() {
     this.params = {
       pageIndex: 1,
-      pageSize: 20,
+      pageSize: 12,
       keyword: '',
       minPrice: null,
       maxPrice: null,
