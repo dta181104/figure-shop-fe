@@ -10,6 +10,7 @@ type UserProfile = {
   username?: string;
   email?: string;
   phone?: string;
+  address?: string;
   avatarUrl?: string;
   roles?: Array<{ code?: string; name?: string }>;
   createdDate?: string;
@@ -64,6 +65,7 @@ export class AccountComponent implements OnInit {
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
+      address: [''],
     });
   }
 
@@ -77,6 +79,10 @@ export class AccountComponent implements OnInit {
 
   get phone(): string {
     return this.profile?.phone || 'Chưa cập nhật số điện thoại';
+  }
+
+  get address(): string {
+    return this.profile?.address || 'Chưa cập nhật địa chỉ';
   }
 
   get createdAt(): string {
@@ -164,6 +170,7 @@ export class AccountComponent implements OnInit {
         name: this.profile.name || this.profile.username || '',
         email: this.profile.email || '',
         phone: this.profile.phone || '',
+        address: this.profile.address || '',
       });
     }
   }

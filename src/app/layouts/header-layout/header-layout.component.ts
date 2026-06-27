@@ -81,7 +81,7 @@ export class HeaderLayoutComponent implements OnDestroy {
     if (!this.isBrowser) {
       return;
     }
-    this.authService.logout();
+    this.authService.logoutApi(this.authService.getToken() || '').subscribe();
     this.showAccountDropdown = false;
     this.checkLogin();
     this.router.navigate(['/login']);

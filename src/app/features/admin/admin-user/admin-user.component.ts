@@ -51,6 +51,7 @@ export class AdminUserComponent implements OnInit {
     password: '',
     name: '',
     email: '',
+    address: '',
     phone: '',
     status: 'ACTIVE',
     role: [] as number[],
@@ -97,6 +98,7 @@ export class AdminUserComponent implements OnInit {
     const payload = {
       name: this.userForm.name,
       email: this.userForm.email,
+      address: this.userForm.address,
       phone: this.userForm.phone,
       status: this.userForm.status,
       roles: this.userForm.role,
@@ -122,6 +124,7 @@ export class AdminUserComponent implements OnInit {
         pass: this.userForm.password,
         name: this.userForm.name,
         email: this.userForm.email,
+        address: this.userForm.address,
         roles: this.userForm.role,
       } as any)
       .pipe(finalize(() => (this.isSavingUser = false)))
@@ -142,6 +145,7 @@ export class AdminUserComponent implements OnInit {
       password: '',
       name: user.name || user.fullName || '',
       email: user.email || '',
+      address: (user as any).address || '',
       phone: user.phone || '',
       status: (user.status?.toString() || 'ACTIVE').toUpperCase(),
       role: this.mapRolesToIds((user as any).roles),
@@ -176,7 +180,7 @@ export class AdminUserComponent implements OnInit {
   }
 
   restoreUser(user: AdminUser): void {
-    this.adminService.updateAccount(user.code!, { ...user, deleted: false } as any).subscribe({
+    this.adminService.updateAccount(user.code!, {  deleted: false } as any).subscribe({
       next: () => {
         this.userMessage = 'Khôi phục tài khoản thành công.';
         this.loadUsers();
@@ -192,6 +196,7 @@ export class AdminUserComponent implements OnInit {
       password: '',
       name: '',
       email: '',
+      address: '',
       phone: '',
       status: 'ACTIVE',
       role: [],

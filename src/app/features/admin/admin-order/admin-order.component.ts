@@ -9,6 +9,7 @@ import { OrderService } from '../../../core/services/order.service';
   templateUrl: './admin-order.component.html',
   standalone: true,
   imports: [CommonModule, FormsModule, NzTableModule],
+  styleUrl: '../admin.component.css',
 })
 export class AdminOrderComponent implements OnInit {
   orders: any[] = [];

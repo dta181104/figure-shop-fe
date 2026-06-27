@@ -35,12 +35,12 @@
                       focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-300 ease-in-out" />
       </div>
 
-      <div>
+      <!-- <div>
         <input type="file" id="avatarFile" name="avatarFile" (change)="onFileSelected($event)" accept="image/*" required
                class="block w-full text-gray-200 file:mr-4 file:py-2 file:px-4
                       file:rounded-lg file:border-0 file:text-sm file:font-semibold
                       file:bg-green-600 file:text-white hover:file:bg-green-700 cursor-pointer" />
-      </div>
+      </div> -->
 
       <div *ngIf="errorMessage" class="text-red-400 text-sm text-center -mt-3">
         {{ errorMessage }}

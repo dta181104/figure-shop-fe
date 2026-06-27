@@ -23,13 +23,13 @@
             class="form-control-sm"
           />
         </div>
-        <!-- <div class="filter-group">
-          <label><small>Danh mục</small></label>
+        <div class="filter-group">
+          <label><small>Series</small></label>
           <select [(ngModel)]="filterParams.categoryId" class="form-control-sm">
             <option value="">Tất cả</option>
             <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
           </select>
-        </div> -->
+        </div>
         <div class="filter-group">
           <label><small>Giá từ</small></label>
           <input
@@ -143,9 +143,9 @@
       <input name="productCode" [(ngModel)]="productForm.code" placeholder="Tự động nếu để trống" />
     </label>
     <label>
-      <span>Danh mục</span>
+      <span>Series</span>
       <select name="categoryId" [(ngModel)]="productForm.categoryId">
-        <option [value]="''">Chọn danh mục</option>
+        <option [value]="''">Chọn series</option>
         <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
       </select>
     </label>
@@ -160,7 +160,7 @@
     <label>
       <span>Trạng thái</span>
       <select name="productStatus" [(ngModel)]="productForm.status">
-        <option [value]="1">Hoạt động</option>
+        <option [value]="1">Đang bán</option>
         <option [value]="0">Ngừng kinh doanh</option>
       </select>
     </label>

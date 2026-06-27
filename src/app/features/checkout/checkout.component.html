@@ -19,13 +19,13 @@
           <img
             [src]="item.images?.[0]?.imageUrl || 'assets/images/default.png'"
             [alt]="item.name"
-            style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;"
+            style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px"
           />
         </td>
         <td>{{ item.name }}</td>
         <td>{{ item.price | number }} đ</td>
         <td>{{ item.quantity }}</td>
-        <td>{{ (item.price * (item.quantity || 1)) | number }} đ</td>
+        <td>{{ item.price * (item.quantity || 1) | number }} đ</td>
       </tr>
     </tbody>
   </table>
@@ -50,7 +50,7 @@
       <input type="tel" [(ngModel)]="customer.phone" name="phone" required />
     </div>
 
-    <div class="form-group">
+    <!-- <div class="form-group">
       <label>Tỉnh/Thành phố:</label>
       <select [(ngModel)]="customer.city" (change)="onCityChange()" name="city" required>
         <option value="">-- Chọn --</option>
@@ -64,7 +64,7 @@
         <option value="">-- Chọn --</option>
         <option *ngFor="let w of wards" [value]="w.Name">{{ w.Name }}</option>
       </select>
-    </div>
+    </div> -->
 
     <div class="form-group">
       <label>Địa chỉ (Số nhà, tên đường):</label>
@@ -75,23 +75,30 @@
     <h3>Phương thức thanh toán</h3>
     <div class="payment-methods">
       <label>
-        <input type="radio" name="payment" value="cod" [(ngModel)]="paymentMethod" /> 
+        <input type="radio" name="payment" value="cod" [(ngModel)]="paymentMethod" />
         Thanh toán khi nhận hàng (COD)
       </label>
 
       <label>
         <input type="radio" name="payment" value="vnpay" [(ngModel)]="paymentMethod" />
-        <img src="assets\images\VNPay_Logo.png" alt="VNPay" style="width: 60px; vertical-align: middle; margin-left: 8px;" />
+        <img
+          src="assets\images\VNPay_Logo.png"
+          alt="VNPay"
+          style="width: 60px; vertical-align: middle; margin-left: 8px"
+        />
         VNPay
       </label>
 
       <label>
         <input type="radio" name="payment" value="momo" [(ngModel)]="paymentMethod" />
-        <img src="assets\images\MoMo_Logo.png" alt="MoMo" style="width: 50px; vertical-align: middle; margin-left: 8px;" />
+        <img
+          src="assets\images\MoMo_Logo.png"
+          alt="MoMo"
+          style="width: 50px; vertical-align: middle; margin-left: 8px"
+        />
         MoMo
       </label>
     </div>
-
 
     <button type="submit" class="btn-confirm">Xác nhận thanh toán</button>
   </form>

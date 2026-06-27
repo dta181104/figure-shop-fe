@@ -24,9 +24,7 @@ export class AuthService {
   }
 
   logoutApi(token: string): Observable<any> {
-    return this.http.post('auth/logout', { token }).pipe(
-      tap(() => this.logout())
-    );
+    return this.http.post('auth/logout', { token }).pipe(tap(() => this.logout()));
   }
 
   refresh(token: string): Observable<any> {
