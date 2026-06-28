@@ -32,6 +32,7 @@ export class AdminOrderComponent implements OnInit {
   }
 
   loadOrders(): void {
+    this.scrollToTop();
     this.isLoading = true;
     const params = {
       pageIndex: this.pageIndex - 1,
@@ -89,5 +90,9 @@ export class AdminOrderComponent implements OnInit {
         // Cập nhật lại danh sách sau khi đổi trạng thái thành công
         this.loadOrders();
       });
+  }
+
+  private scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

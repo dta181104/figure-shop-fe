@@ -46,6 +46,7 @@ export class AdminRoleComponent implements OnInit {
   }
 
   loadRoles(): void {
+    this.scrollToTop();
     this.isLoading = true;
     this.roleService
       .getRoles()
@@ -95,6 +96,7 @@ export class AdminRoleComponent implements OnInit {
   }
 
   editRole(role: any): void {
+    this.scrollToTop();
     // Đảm bảo lấy ID từ role. Nếu API trả về trường khác (như code), hãy kiểm tra lại
     this.editingRoleId = role.id ?? null;
     this.roleForm = {
@@ -153,5 +155,9 @@ export class AdminRoleComponent implements OnInit {
 
   closeConfirm(): void {
     this.confirmVisible = false;
+  }
+
+  private scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

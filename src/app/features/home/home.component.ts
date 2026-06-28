@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadCategories();
-    this.loadProducts();
+    this.loadProducts(false);
   }
 
   loadCategories() {
@@ -61,7 +61,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadProducts() {
+  loadProducts(shouldScroll = true) {
+    if (shouldScroll) {
+      this.scrollToProducts();
+    }
     // Clean params before sending
     const queryParams: any = {
       pageIndex: this.params.pageIndex,
@@ -140,5 +143,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   viewDetail(productId: number) {
     this.router.navigate(['/product', productId]);
+  }
+
+  private scrollToProducts(): void {
+    const element = document.getElementById('products');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }

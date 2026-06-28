@@ -83,6 +83,7 @@ export class AdminProductComponent implements OnInit {
   }
 
   loadProducts(): void {
+    this.scrollToTop();
     this.isProductsLoading = true;
     const query = {
       pageIndex: this.pageIndex,
@@ -217,6 +218,7 @@ export class AdminProductComponent implements OnInit {
   }
 
   editProduct(product: ProductItems): void {
+    this.scrollToTop();
     this.editingProductCode = product.code || '';
     this.productForm = {
       code: product.code || '',
@@ -286,5 +288,9 @@ export class AdminProductComponent implements OnInit {
 
   closeConfirm(): void {
     this.confirmVisible = false;
+  }
+
+  private scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

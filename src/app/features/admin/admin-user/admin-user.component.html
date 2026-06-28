@@ -2,7 +2,16 @@
   <div class="card">
     <div class="card-header">
       <h3>Danh sách người dùng</h3>
-      <input [(ngModel)]="userQuery" (ngModelChange)="loadUsers()" placeholder="Tìm kiếm..." />
+      <div class="search-bar">
+        <input
+          name="userQuery"
+          [(ngModel)]="userQuery"
+          (keyup.enter)="searchUsers()"
+          placeholder="Tìm kiếm theo username"
+        />
+        <button type="button" class="btn-primary" (click)="searchUsers()">Tìm kiếm</button>
+        <button type="button" class="btn-secondary" (click)="clearSearch()">Xóa lọc</button>
+      </div>
     </div>
 
     <nz-table

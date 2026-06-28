@@ -29,6 +29,7 @@ export class AdminUserComponent implements OnInit {
   isUsersLoading = false;
   isSavingUser = false;
   userQuery = '';
+  appliedUserQuery = '';
   editingUserCode = '';
   userMessage = '';
   userError = '';
@@ -62,9 +63,10 @@ export class AdminUserComponent implements OnInit {
   }
 
   loadUsers(): void {
+    this.scrollToTop();
     this.isUsersLoading = true;
     this.adminService
-      .getAccounts(this.pageIndex, this.pageSize)
+      .getAccounts(this.pageIndex, this.pageSize, this.appliedUserQuery)
       .pipe(finalize(() => (this.isUsersLoading = false)))
       .subscribe({
         next: (res: any) => {
@@ -75,6 +77,22 @@ export class AdminUserComponent implements OnInit {
           this.userError = 'Không tải được danh sách người dùng.';
         },
       });
+  }
+
+  searchUsers(): void {
+    this.appliedUserQuery = this.userQuery;
+    this.pageIndex = 1;
+    this.loadUsers();
+  }
+
+  clearSearch(): void {
+    // Chỉ tải lại nếu có nội dung tìm kiếm để tránh gọi API không cần thiết
+    if (this.userQuery || this.appliedUserQuery) {
+      this.userQuery = '';
+      this.appliedUserQuery = '';
+      this.pageIndex = 1;
+      this.loadUsers();
+    }
   }
 
   saveUser(): void {
@@ -139,6 +157,7 @@ export class AdminUserComponent implements OnInit {
   }
 
   editUser(user: AdminUser): void {
+    this.scrollToTop();
     this.editingUserCode = user.code || '';
     this.userForm = {
       username: user.username || '',
@@ -180,7 +199,7 @@ export class AdminUserComponent implements OnInit {
   }
 
   restoreUser(user: AdminUser): void {
-    this.adminService.updateAccount(user.code!, {  deleted: false } as any).subscribe({
+    this.adminService.updateAccount(user.code!, { deleted: false } as any).subscribe({
       next: () => {
         this.userMessage = 'Khôi phục tài khoản thành công.';
         this.loadUsers();
@@ -219,5 +238,9 @@ export class AdminUserComponent implements OnInit {
 
   closeConfirm(): void {
     this.confirmVisible = false;
+  }
+
+  private scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
