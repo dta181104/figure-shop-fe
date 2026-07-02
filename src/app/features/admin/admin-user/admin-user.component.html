@@ -2,15 +2,35 @@
   <div class="card">
     <div class="card-header">
       <h3>Danh sách người dùng</h3>
-      <div class="search-bar">
-        <input
-          name="userQuery"
-          [(ngModel)]="userQuery"
-          (keyup.enter)="searchUsers()"
-          placeholder="Tìm kiếm theo username"
-        />
-        <button type="button" class="btn-primary" (click)="searchUsers()">Tìm kiếm</button>
-        <button type="button" class="btn-secondary" (click)="clearSearch()">Xóa lọc</button>
+    </div>
+
+    <!-- Bộ lọc người dùng-->
+    <div class="filter-section" style="padding: 1rem; border-bottom: 1px solid #eee">
+      <div
+        class="filter-grid"
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 10px;
+        "
+      >
+        <div class="filter-group">
+          <label><small>Tìm kiếm</small></label>
+          <input
+            name="userQuery"
+            [(ngModel)]="userQuery"
+            (keyup.enter)="searchUsers()"
+            placeholder="Tìm kiếm theo username"
+            class="form-control-sm"
+          />
+        </div>
+
+        <div class="filter-actions" style="display: flex; align-items: flex-end; gap: 8px">
+          <button type="button" class="btn-primary btn-sm" (click)="searchUsers()">Tìm kiếm</button>
+          <button type="button" class="btn-secondary btn-sm" (click)="clearSearch()">
+            Xóa lọc
+          </button>
+        </div>
       </div>
     </div>
 

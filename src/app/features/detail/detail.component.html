@@ -2,18 +2,6 @@
   <!-- Hình ảnh sản phẩm -->
   <div class="image-section">
     <img [src]="selectedImageUrl || getMainImage()" [alt]="product.name" class="main-image" />
-
-    <!-- Thumbnail nếu có nhiều ảnh -->
-    <!-- <div *ngIf="hasMultipleImages" class="thumbnail-list">
-      <img
-        *ngFor="let img of product.images"
-        [src]="img.imageUrl"
-        [alt]="product.name"
-        [class.active]="img.imageMain || selectedImageUrl === img.imageUrl"
-        class="thumbnail"
-        (click)="onThumbnailClick(img.imageUrl!)"
-      />
-    </div> -->
   </div>
 
   <!-- Thông tin sản phẩm -->
@@ -22,7 +10,6 @@
     <p class="product-description">{{ product.description }}</p>
 
     <ul class="product-meta">
-      <!-- <li><strong>Code:</strong> {{ product.code }}</li> -->
       <li><strong>Kho:</strong> {{ product.quantity }}</li>
       <li><strong>Chiều cao:</strong> {{ product.height }} cm</li>
       <li><strong>Cân nặng:</strong> {{ product.weight }} g</li>
@@ -36,7 +23,6 @@
 
   <div class="viewer-container">
     <p>Ảnh 3D của sản phẩm</p>
-    <!-- Sử dụng Property Binding [src] của Angular để truyền đường dẫn động từ file TS -->
     <model-viewer
       [src]="modelUrl"
       alt="Mô hình ảnh 3D"
@@ -47,6 +33,35 @@
     </model-viewer>
   </div>
 </div>
+
+<section *ngIf="product" class="suggestion-section">
+  <div class="suggestion-header">
+    <h3>Sản phẩm cùng danh mục</h3>
+  </div>
+
+  <div *ngIf="isSuggestionLoading" class="suggestion-loading">Đang tải sản phẩm gợi ý...</div>
+
+  <ng-container *ngIf="!isSuggestionLoading">
+    <div *ngIf="suggestedProducts.length > 0; else noSuggestions" class="suggestion-grid">
+      <article
+        class="suggestion-card"
+        *ngFor="let item of suggestedProducts; trackBy: trackSuggestionById"
+        (click)="viewDetail(item.id)"
+      >
+        <img class="suggestion-image" [src]="getSuggestionImage(item)" [alt]="item.name" />
+        <div class="suggestion-body">
+          <h4>{{ item.name }}</h4>
+          <p>{{ item.description || 'Sản phẩm cùng danh mục' }}</p>
+          <strong>{{ item.price | number: '1.0-0' }} đ</strong>
+        </div>
+      </article>
+    </div>
+
+    <ng-template #noSuggestions>
+      <div class="suggestion-empty">Chưa có sản phẩm gợi ý.</div>
+    </ng-template>
+  </ng-container>
+</section>
 
 <ng-template #loading>
   <p class="loading-text">Loading product detail...</p>

@@ -8,6 +8,7 @@ import { UserService } from '../../core/services/user.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './order-history.component.html',
+  styleUrls: ['./order-history.component.css'],
 })
 export class OrderHistoryComponent implements OnInit {
   orders: any[] = [];
@@ -34,32 +35,46 @@ export class OrderHistoryComponent implements OnInit {
             this.orders = orderRes.result?.content || [];
             this.isLoading = false;
           },
-          error: () => this.isLoading = false
+          error: () => (this.isLoading = false),
         });
       },
-      error: () => this.isLoading = false
+      error: () => (this.isLoading = false),
     });
   }
 
   getStatusLabel(status: string): string {
     const statusMap: { [key: string]: string } = {
-      '1': 'Chờ xác nhận',
-      '2': 'Đã xác nhận',
-      '3': 'Đang giao hàng',
-      '4': 'Hoàn thành',
-      '5': 'Đã hủy'
+      '1': 'Chờ thanh toán',
+      '2': 'Chờ xác nhận',
+      '3': 'Đã xác nhận',
+      '4': 'Đang giao hàng',
+      '5': 'Giao hàng thành công',
+      '6': 'Đã hủy',
     };
-    return statusMap[status] || 'Đã xác nhận';
+    return statusMap[String(status)] || 'Không rõ trạng thái';
+  }
+
+  getStatusClass(status: string): string {
+    const statusClassMap: { [key: string]: string } = {
+      '1': 'pending-payment',
+      '2': 'pending-confirmation',
+      '3': 'confirmed',
+      '4': 'shipping',
+      '5': 'delivered',
+      '6': 'cancelled',
+    };
+
+    return statusClassMap[String(status)] || 'unknown';
   }
 
   cancelOrder(orderId: number): void {
     if (confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) {
-      this.orderService.updateBill(orderId, { status: 'CANCELLED' }).subscribe({
+      this.orderService.updateBill(orderId, { status: '6' }).subscribe({
         next: () => {
           alert('Hủy đơn hàng thành công');
           this.loadUserAndOrders();
         },
-        error: (err) => alert('Lỗi khi hủy đơn: ' + err.message)
+        error: (err) => alert('Lỗi khi hủy đơn: ' + err.message),
       });
     }
   }

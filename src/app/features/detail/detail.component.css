@@ -237,3 +237,93 @@
   height: 500px; /* Đặt một chiều cao cụ thể */
   border-radius: 8px;
 }
+
+.suggestion-section {
+  max-width: 1200px;
+  margin: 24px auto 0;
+  padding: 0 40px 40px;
+}
+
+.suggestion-header {
+  margin-bottom: 16px;
+}
+
+.suggestion-header h3 {
+  margin: 0 0 6px;
+  font-size: 24px;
+  color: #1a1f3a;
+}
+
+.suggestion-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.suggestion-loading,
+.suggestion-empty {
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e8eef5;
+  color: #475569;
+}
+
+.suggestion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
+}
+
+.suggestion-card {
+  background: #fff;
+  border: 1px solid #e8eef5;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.suggestion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+  background: #f8fafc;
+}
+
+.suggestion-body {
+  padding: 14px;
+}
+
+.suggestion-body h4 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #1e293b;
+}
+
+.suggestion-body p {
+  margin: 0 0 12px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.45;
+  min-height: 38px;
+}
+
+.suggestion-body strong {
+  color: #be123c;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .suggestion-section {
+    padding: 0 16px 24px;
+  }
+}

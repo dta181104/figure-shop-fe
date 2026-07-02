@@ -1,5 +1,13 @@
-import { Component, OnInit, inject, DestroyRef, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef  } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {
+  Component,
+  OnInit,
+  inject,
+  DestroyRef,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductItems } from '@/app/core/models/product-item.model';
 import { ProductService } from '@/app/core/services/product.service';
@@ -17,6 +25,8 @@ import { NotificationService } from '@/app/core/services/notification.service';
 })
 export class DetailComponent implements OnInit {
   product?: ProductItems;
+  suggestedProducts: ProductItems[] = [];
+  isSuggestionLoading = false;
   private destroyRef = inject(DestroyRef);
   selectedImageUrl: string | null = null;
 
@@ -24,11 +34,12 @@ export class DetailComponent implements OnInit {
     private route: ActivatedRoute,
     private productService: ProductService,
     private cartService: CartService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private router: Router
   ) {}
 
   // Đường dẫn trỏ tới file mô hình nằm trong thư mục assets
-  public modelUrl: string = 'assets/images/gundam_unicorn.glb';
+  public modelUrl: string = 'assets/images/gundam_unicorn-compressed.glb';
 
   // Lấy đối tượng model-viewer từ giao diện để xử lý trong code TS nếu cần
   @ViewChild('viewer', { static: false }) viewerRef!: ElementRef;
@@ -49,6 +60,38 @@ export class DetailComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
         this.product = res.result;
+        this.selectedImageUrl = null;
+        this.loadSuggestedProducts();
+      });
+  }
+
+  private loadSuggestedProducts(): void {
+    const categoryId = this.product?.categoryId;
+    if (!categoryId) {
+      this.suggestedProducts = [];
+      return;
+    }
+
+    this.isSuggestionLoading = true;
+    this.productService
+      .getProducts({
+        pageIndex: 0,
+        pageSize: 5,
+        categoryId,
+        deleted: false,
+      } as any)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          const content = res.result?.content || [];
+          const currentId = this.product?.id;
+          this.suggestedProducts = content.filter((item) => item.id !== currentId).slice(0, 5);
+          this.isSuggestionLoading = false;
+        },
+        error: () => {
+          this.suggestedProducts = [];
+          this.isSuggestionLoading = false;
+        },
       });
   }
 
@@ -72,5 +115,17 @@ export class DetailComponent implements OnInit {
     this.cartService.addToCart(this.product);
     // alert('Đã thêm sản phẩm vào giỏ hàng!');
     this.notificationService.show('success', 'Thêm giỏ hàng thành công!');
+  }
+
+  viewDetail(productId: number): void {
+    this.router.navigate(['/product', productId]);
+  }
+
+  getSuggestionImage(product: ProductItems): string {
+    return product.images?.find((img) => img.imageMain)?.imageUrl ?? 'assets/images/default.png';
+  }
+
+  trackSuggestionById(index: number, item: ProductItems): number {
+    return item.id;
   }
 }

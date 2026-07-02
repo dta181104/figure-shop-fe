@@ -1,0 +1,82 @@
+<div class="dashboard-container">
+  <div *ngIf="dashboardError" class="error-alert" style="color: red; margin-bottom: 16px">
+    {{ dashboardError }}
+  </div>
+
+  <nz-spin [nzSpinning]="isGeneralLoading">
+    <div nz-row [nzGutter]="16" style="margin-bottom: 24px">
+      <div nz-col [nzSpan]="8">
+        <nz-card>
+          <h3 style="color: #8c8c8c; font-size: 14px">Tổng Người Dùng</h3>
+          <h2 style="font-size: 28px; margin: 0; color: #1890ff">{{ totalUsers }}</h2>
+        </nz-card>
+      </div>
+      <div nz-col [nzSpan]="8">
+        <nz-card>
+          <h3 style="color: #8c8c8c; font-size: 14px">Tổng Sản Phẩm</h3>
+          <h2 style="font-size: 28px; margin: 0; color: #52c41a">{{ totalProducts }}</h2>
+        </nz-card>
+      </div>
+    </div>
+  </nz-spin>
+
+  <nz-card>
+    <div
+      class="chart-header"
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      "
+    >
+      <h3>Thống kê Chi tiết</h3>
+
+      <nz-select
+        [(ngModel)]="selectedTimeFrame"
+        (ngModelChange)="onTimeFrameChange()"
+        style="width: 200px"
+      >
+        <nz-option *ngFor="let frame of timeFrames" [nzValue]="frame.value" [nzLabel]="frame.label">
+        </nz-option>
+      </nz-select>
+    </div>
+
+    <nz-spin [nzSpinning]="isChartLoading">
+      <div class="charts-wrapper" style="min-height: 500px">
+        <div
+          class="order-chart"
+          style="margin-bottom: 32px"
+          *ngIf="orderChartOptions.series.length > 0"
+        >
+          <apx-chart
+            [series]="orderChartOptions.series"
+            [chart]="orderChartOptions.chart"
+            [xaxis]="orderChartOptions.xaxis"
+            [yaxis]="orderChartOptions.yaxis"
+            [dataLabels]="orderChartOptions.dataLabels"
+            [stroke]="orderChartOptions.stroke!"
+            [colors]="orderChartOptions.colors!"
+            [title]="orderChartOptions.title"
+          >
+          </apx-chart>
+        </div>
+
+        <hr style="border: none; border-top: 1px dashed #f0f0f0; margin-bottom: 32px" />
+
+        <div class="revenue-chart" *ngIf="revenueChartOptions.series.length > 0">
+          <apx-chart
+            [series]="revenueChartOptions.series"
+            [chart]="revenueChartOptions.chart"
+            [xaxis]="revenueChartOptions.xaxis"
+            [yaxis]="revenueChartOptions.yaxis"
+            [dataLabels]="revenueChartOptions.dataLabels"
+            [colors]="revenueChartOptions.colors!"
+            [title]="revenueChartOptions.title"
+          >
+          </apx-chart>
+        </div>
+      </div>
+    </nz-spin>
+  </nz-card>
+</div>

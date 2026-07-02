@@ -4,14 +4,15 @@
       <h3>Danh sách sản phẩm</h3>
     </div>
 
-    <!-- Bộ lọc sản phẩm tương tự trang chủ -->
-    <div class="filter-section" style="padding: 1rem; border-bottom: 1px solid #eee">
+    <!-- Bộ lọc sản phẩm-->
+    <div class="filter-section">
       <div
         class="filter-grid"
         style="
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-          gap: 10px;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 12px;
+          align-items: end;
         "
       >
         <div class="filter-group">
@@ -20,12 +21,12 @@
             type="text"
             [(ngModel)]="filterParams.keyword"
             placeholder="Tên sản phẩm..."
-            class="form-control-sm"
+            class="form-control-sm filter-control"
           />
         </div>
         <div class="filter-group">
           <label><small>Series</small></label>
-          <select [(ngModel)]="filterParams.categoryId" class="form-control-sm">
+          <select [(ngModel)]="filterParams.categoryId" class="form-control-sm filter-control">
             <option value="">Tất cả</option>
             <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
           </select>
@@ -36,7 +37,7 @@
             type="number"
             [(ngModel)]="filterParams.minPrice"
             placeholder="Tối thiểu"
-            class="form-control-sm"
+            class="form-control-sm filter-control"
           />
         </div>
         <div class="filter-group">
@@ -45,12 +46,12 @@
             type="number"
             [(ngModel)]="filterParams.maxPrice"
             placeholder="Tối đa"
-            class="form-control-sm"
+            class="form-control-sm filter-control"
           />
         </div>
         <div class="filter-group">
           <label><small>Sắp xếp theo</small></label>
-          <select [(ngModel)]="filterParams.sortBy" class="form-control-sm">
+          <select [(ngModel)]="filterParams.sortBy" class="form-control-sm filter-control">
             <option value="">Mặc định</option>
             <option value="NAME">Tên</option>
             <option value="PRICE">Giá</option>
@@ -59,12 +60,12 @@
         </div>
         <div class="filter-group">
           <label><small>Thứ tự</small></label>
-          <select [(ngModel)]="filterParams.sortDirection" class="form-control-sm">
+          <select [(ngModel)]="filterParams.sortDirection" class="form-control-sm filter-control">
             <option value="ASC">Tăng dần</option>
             <option value="DESC">Giảm dần</option>
           </select>
         </div>
-        <div class="filter-actions" style="display: flex; align-items: flex-end; gap: 8px">
+        <div class="filter-actions">
           <button type="button" class="btn-primary btn-sm" (click)="applyFilters()">
             Tìm kiếm
           </button>
@@ -134,6 +135,8 @@
 
   <form class="card" (ngSubmit)="saveProduct()">
     <h3>{{ editingProductCode ? 'Cập nhật sản phẩm' : 'Tạo sản phẩm mới' }}</h3>
+    <div class="alert alert-error" *ngIf="productError">{{ productError }}</div>
+    <div class="alert alert-success" *ngIf="productMessage">{{ productMessage }}</div>
     <label>
       <span>Tên sản phẩm</span>
       <input name="productName" [(ngModel)]="productForm.name" required />
@@ -167,6 +170,22 @@
     <label>
       <span>Mô tả</span>
       <textarea name="productDesc" [(ngModel)]="productForm.description" rows="3"></textarea>
+    </label>
+    <label>
+      <span>Ảnh chính</span>
+      <input
+        type="file"
+        accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/*"
+        (change)="onMainImageSelected($event)"
+      />
+      <small class="muted">Chỉ nhận ảnh .jpg, .jpeg, .png, .webp, .gif, .bmp, .avif. Tối đa 10MB.</small>
+      <small *ngIf="mainImageFileName">Đã chọn: {{ mainImageFileName }}</small>
+    </label>
+    <label>
+      <span>File mô hình GLB</span>
+      <input type="file" accept=".glb,model/gltf-binary" (change)="onModelFileSelected($event)" />
+      <small class="muted">Chỉ nhận file .glb (model 3D), tối đa 10MB.</small>
+      <small *ngIf="modelFileName">Đã chọn: {{ modelFileName }}</small>
     </label>
 
     <div class="actions">

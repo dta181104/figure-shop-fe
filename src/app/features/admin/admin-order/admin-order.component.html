@@ -20,12 +20,9 @@
         <div class="filter-group">
           <label>Trạng thái</label>
           <select [(ngModel)]="filterParams.status" name="status" class="form-control">
-            <option value="">Tất cả trạng thái</option>
-            <option value="PENDING">Chờ xác nhận</option>
-            <option value="CONFIRMED">Đã xác nhận</option>
-            <option value="SHIPPING">Đang giao hàng</option>
-            <option value="DELIVERED">Hoàn thành</option>
-            <option value="CANCELLED">Đã hủy</option>
+            <option *ngFor="let option of statusOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
           </select>
         </div>
         <div class="filter-group">
@@ -92,7 +89,7 @@
           <td style="color: #be123c; font-weight: 600">{{ order.totalMoney | number }} đ</td>
           <td>{{ order.createdDate | date: 'dd/MM/yyyy HH:mm' }}</td>
           <td>
-            <span [ngClass]="'status-badge status-' + order.status.toLowerCase()">
+            <span [ngClass]="'status-badge status-' + getStatusClass(order.status)">
               {{ getStatusLabel(order.status) }}
             </span>
           </td>
@@ -100,11 +97,32 @@
             <div class="inline-actions">
               <button class="action-btn action-edit" (click)="viewDetail(order)">Chi tiết</button>
               <button
-                *ngIf="order.status === '1'"
+                *ngIf="canConfirm(order)"
                 class="action-btn action-restore"
-                (click)="updateStatus(order, 'CONFIRMED')"
+                (click)="confirmOrder(order)"
               >
                 Xác nhận
+              </button>
+              <button
+                *ngIf="canShip(order)"
+                class="action-btn action-edit"
+                (click)="shipOrder(order)"
+              >
+                Giao hàng
+              </button>
+              <button
+                *ngIf="canComplete(order)"
+                class="action-btn action-restore"
+                (click)="completeOrder(order)"
+              >
+                Hoàn thành
+              </button>
+              <button
+                *ngIf="canCancel(order)"
+                class="action-btn action-delete"
+                (click)="cancelOrder(order)"
+              >
+                Hủy
               </button>
             </div>
           </td>
@@ -143,9 +161,13 @@
     font-size: 12px;
     font-weight: 600;
   }
-  .status-pending {
+  .status-pending-payment {
     background: #fef3c7;
     color: #92400e;
+  }
+  .status-pending-confirmation {
+    background: #f3e8ff;
+    color: #7e22ce;
   }
   .status-confirmed {
     background: #dcfce7;
@@ -158,11 +180,14 @@
   .status-delivered {
     background: #f0fdf4;
     color: #15803d;
-    border: 1px solid #15803d;
   }
   .status-cancelled {
     background: #fee2e2;
     color: #991b1b;
+  }
+  .status-unknown {
+    background: #f3f4f6;
+    color: #374151;
   }
   .muted {
     color: #6b7280;

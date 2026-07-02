@@ -8,12 +8,14 @@ import { ProductService } from '@/app/core/services/product.service';
 import { ProductItems } from '@/app/core/models/product-item.model';
 import { CategoryService } from '@/app/core/services/category.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { AdminCategoryComponent } from './admin-category/admin-category.component';
 import { AdminUserComponent } from './admin-user/admin-user.component';
 import { AdminProductComponent } from './admin-product/admin-product.component';
 import { AdminRoleComponent } from './admin-role/admin-role.component';
 import { AdminOrderComponent } from './admin-order/admin-order.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 
-type TabKey = 'users' | 'products' | 'roles' | 'orders';
+type TabKey = 'users' | 'products' | 'categories' | 'roles' | 'orders' | 'dashboard';
 
 @Component({
   selector: 'app-admin',
@@ -24,8 +26,10 @@ type TabKey = 'users' | 'products' | 'roles' | 'orders';
     RouterLink,
     AdminUserComponent,
     AdminProductComponent,
+    AdminCategoryComponent,
     AdminRoleComponent,
     AdminOrderComponent,
+    AdminDashboardComponent,
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
@@ -47,8 +51,10 @@ export class AdminComponent implements OnInit {
     if (
       routeTab === 'users' ||
       routeTab === 'products' ||
+      routeTab === 'categories' ||
       routeTab === 'roles' ||
-      routeTab === 'orders'
+      routeTab === 'orders' ||
+      routeTab === 'dashboard'
     ) {
       this.activeTab = routeTab;
     }

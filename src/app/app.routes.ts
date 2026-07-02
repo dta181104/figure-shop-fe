@@ -81,9 +81,19 @@ export const routes: Routes = [
     data: { tab: 'products' },
   },
   {
+    path: 'admin/categories',
+    loadComponent: loadAdminComponent,
+    data: { tab: 'categories' },
+  },
+  {
     path: 'admin/orders',
     loadComponent: loadAdminComponent,
     data: { tab: 'orders' },
+  },
+  {
+    path: 'admin/dashboard',
+    loadComponent: loadAdminComponent,
+    data: { tab: 'dashboard' },
   },
   {
     path: 'cart',

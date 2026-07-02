@@ -1,0 +1,21 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.admin-grid {
+  grid-template-columns: 1fr;
+  width: 100%;
+}
+
+.admin-grid > .card {
+  width: 100%;
+}
+
+.card:first-child {
+  grid-column: 1 / -1;
+}
+
+.card:last-child {
+  grid-column: 1 / -1;
+}

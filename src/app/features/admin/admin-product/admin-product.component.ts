@@ -13,9 +13,10 @@ import { NzTableModule } from 'ng-zorro-antd/table';
   standalone: true,
   imports: [CommonModule, FormsModule, ConfirmDialogComponent, NzTableModule],
   templateUrl: './admin-product.component.html',
-  styleUrl: '../admin.component.css',
+  styleUrls: ['../admin.component.css', './admin-product.component.css'],
 })
 export class AdminProductComponent implements OnInit {
+  private readonly maxUploadSize = 10 * 1024 * 1024;
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
 
@@ -27,6 +28,9 @@ export class AdminProductComponent implements OnInit {
   productMessage = '';
   productError = '';
   priceError = '';
+  imageError = '';
+  mainImageFileName = '';
+  modelFileName = '';
 
   // Filters
   filterParams = {
@@ -70,6 +74,9 @@ export class AdminProductComponent implements OnInit {
     status: 1,
     categoryId: null as number | null,
   };
+
+  mainImageFile: File | null = null;
+  modelFile: File | null = null;
 
   ngOnInit(): void {
     this.loadCategories();
@@ -143,6 +150,11 @@ export class AdminProductComponent implements OnInit {
       return;
     }
 
+    if (this.imageError) {
+      this.productError = this.imageError;
+      return;
+    }
+
     if (this.editingProductCode) {
       this.openConfirm({
         title: 'Xác nhận cập nhật sản phẩm',
@@ -162,7 +174,7 @@ export class AdminProductComponent implements OnInit {
     this.productMessage = '';
     this.isSavingProduct = true;
 
-    const payload: Partial<ProductItems> = {
+    const payload = this.buildProductFormData({
       code: this.productForm.code.trim() || undefined,
       name: this.productForm.name.trim(),
       description: this.productForm.description.trim() || undefined,
@@ -170,7 +182,7 @@ export class AdminProductComponent implements OnInit {
       quantity: this.productForm.quantity !== null ? Number(this.productForm.quantity) : undefined,
       status: Number(this.productForm.status),
       categoryId: this.productForm.categoryId || undefined,
-    };
+    });
 
     this.productService
       .updateProduct(this.editingProductCode, payload)
@@ -192,7 +204,7 @@ export class AdminProductComponent implements OnInit {
     this.productMessage = '';
     this.isSavingProduct = true;
 
-    const payload: Partial<ProductItems> = {
+    const payload = this.buildProductFormData({
       code: this.productForm.code.trim() || undefined,
       name: this.productForm.name.trim(),
       description: this.productForm.description.trim() || undefined,
@@ -200,7 +212,7 @@ export class AdminProductComponent implements OnInit {
       quantity: this.productForm.quantity !== null ? Number(this.productForm.quantity) : undefined,
       status: Number(this.productForm.status),
       categoryId: this.productForm.categoryId || undefined,
-    };
+    });
 
     this.productService
       .createProduct(payload)
@@ -261,6 +273,11 @@ export class AdminProductComponent implements OnInit {
 
   resetProductForm(): void {
     this.editingProductCode = '';
+    this.imageError = '';
+    this.mainImageFileName = '';
+    this.modelFileName = '';
+    this.mainImageFile = null;
+    this.modelFile = null;
     this.productForm = {
       code: '',
       name: '',
@@ -270,6 +287,103 @@ export class AdminProductComponent implements OnInit {
       status: 1,
       categoryId: null as number | null,
     };
+  }
+
+  onMainImageSelected(event: Event): void {
+    this.imageError = '';
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0] ?? null;
+
+    if (!file) {
+      this.mainImageFile = null;
+      this.mainImageFileName = '';
+      return;
+    }
+
+    const error = this.validateImageFile(file, true);
+    if (error) {
+      this.imageError = error;
+      target.value = '';
+      return;
+    }
+
+    this.mainImageFile = file;
+    this.mainImageFileName = file.name;
+  }
+
+  onModelFileSelected(event: Event): void {
+    this.imageError = '';
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0] ?? null;
+
+    if (!file) {
+      this.modelFile = null;
+      this.modelFileName = '';
+      return;
+    }
+
+    const error = this.validateGlbFile(file);
+    if (error) {
+      this.imageError = error;
+      target.value = '';
+      return;
+    }
+
+    this.modelFile = file;
+    this.modelFileName = file.name;
+  }
+
+  private validateImageFile(file: File, isMainImage: boolean): string | null {
+    if (file.size > this.maxUploadSize) {
+      return `File ${isMainImage ? 'ảnh chính' : 'mô hình'} phải nhỏ hơn hoặc bằng 10MB.`;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      return 'Ảnh chính chỉ chấp nhận file ảnh.';
+    }
+
+    return null;
+  }
+
+  private validateGlbFile(file: File): string | null {
+    if (file.size > this.maxUploadSize) {
+      return 'File GLB phải nhỏ hơn hoặc bằng 10MB.';
+    }
+
+    const fileName = file.name.toLowerCase();
+    const isGlbByName = fileName.endsWith('.glb');
+    const isGlbByType = file.type === 'model/gltf-binary';
+
+    if (!isGlbByName && !isGlbByType) {
+      return 'File mô hình chỉ chấp nhận định dạng .glb.';
+    }
+
+    return null;
+  }
+
+  private buildProductFormData(baseFields: Record<string, any>): FormData {
+    const formData = new FormData();
+
+    Object.entries(baseFields).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        formData.append(key, String(value));
+      }
+    });
+
+    const images: Array<{ file: File; mainImage: boolean }> = [];
+    if (this.mainImageFile) {
+      images.push({ file: this.mainImageFile, mainImage: true });
+    }
+    if (this.modelFile) {
+      images.push({ file: this.modelFile, mainImage: false });
+    }
+
+    images.forEach((image, index) => {
+      formData.append(`images[${index}].imageFile`, image.file);
+      formData.append(`images[${index}].mainImage`, String(image.mainImage));
+    });
+
+    return formData;
   }
 
   private openConfirm(config: any): void {

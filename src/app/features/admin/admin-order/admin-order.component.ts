@@ -9,7 +9,7 @@ import { OrderService } from '../../../core/services/order.service';
   templateUrl: './admin-order.component.html',
   standalone: true,
   imports: [CommonModule, FormsModule, NzTableModule],
-  styleUrl: '../admin.component.css',
+  styleUrls: ['../admin.component.css', './admin-order.component.css'],
 })
 export class AdminOrderComponent implements OnInit {
   orders: any[] = [];
@@ -17,6 +17,16 @@ export class AdminOrderComponent implements OnInit {
   pageIndex = 1;
   pageSize = 10;
   isLoading = false;
+
+  readonly statusOptions = [
+    { value: '', label: 'Tất cả trạng thái' },
+    { value: '1', label: 'Chờ thanh toán' },
+    { value: '2', label: 'Chờ xác nhận' },
+    { value: '3', label: 'Đã xác nhận' },
+    { value: '4', label: 'Đang giao hàng' },
+    { value: '5', label: 'Giao hàng thành công' },
+    { value: '6', label: 'Đã hủy' },
+  ];
 
   filterParams = {
     keyword: '',
@@ -71,13 +81,27 @@ export class AdminOrderComponent implements OnInit {
 
   getStatusLabel(status: string): string {
     const statusMap: { [key: string]: string } = {
-      '1': 'Chờ xác nhận',
-      '2': 'Đã xác nhận',
-      '3': 'Đang giao hàng',
-      '4': 'Hoàn thành',
-      '5': 'Đã hủy'
+      '1': 'Chờ thanh toán',
+      '2': 'Chờ xác nhận',
+      '3': 'Đã xác nhận',
+      '4': 'Đang giao hàng',
+      '5': 'Giao hàng thành công',
+      '6': 'Đã hủy',
     };
-    return statusMap[status] || 'Đã xác nhận';
+    return statusMap[String(status)] || 'Không rõ trạng thái';
+  }
+
+  getStatusClass(status: string): string {
+    const statusClassMap: { [key: string]: string } = {
+      '1': 'pending-payment',
+      '2': 'pending-confirmation',
+      '3': 'confirmed',
+      '4': 'shipping',
+      '5': 'delivered',
+      '6': 'cancelled',
+    };
+
+    return statusClassMap[String(status)] || 'unknown';
   }
 
   viewDetail(order: any): void {
@@ -87,9 +111,41 @@ export class AdminOrderComponent implements OnInit {
 
   updateStatus(order: any, newStatus: string): void {
     this.orderService.updateBill(order.id, { status: newStatus }).subscribe(() => {
-        // Cập nhật lại danh sách sau khi đổi trạng thái thành công
-        this.loadOrders();
-      });
+      // Cập nhật lại danh sách sau khi đổi trạng thái thành công
+      this.loadOrders();
+    });
+  }
+
+  canConfirm(order: any): boolean {
+    return String(order.status) === '2';
+  }
+
+  canCancel(order: any): boolean {
+    return ['1', '2', '3', '4'].includes(String(order.status));
+  }
+
+  canShip(order: any): boolean {
+    return String(order.status) === '3';
+  }
+
+  canComplete(order: any): boolean {
+    return String(order.status) === '4';
+  }
+
+  confirmOrder(order: any): void {
+    this.updateStatus(order, '3');
+  }
+
+  shipOrder(order: any): void {
+    this.updateStatus(order, '4');
+  }
+
+  completeOrder(order: any): void {
+    this.updateStatus(order, '5');
+  }
+
+  cancelOrder(order: any): void {
+    this.updateStatus(order, '6');
   }
 
   private scrollToTop(): void {

@@ -8,15 +8,6 @@
 
     <aside class="account-card account-card--profile">
       <div class="profile-top">
-        <!-- <div class="profile-avatar">
-          <img
-            *ngIf="profile?.avatarUrl; else initialsAvatar"
-            [src]="profile?.avatarUrl"
-            [alt]="displayName"
-          />
-          <ng-template #initialsAvatar>{{ avatarLabel || 'U' }}</ng-template>
-        </div> -->
-
         <div class="profile-meta">
           <p class="eyebrow">Trang cá nhân</p>
           <h1>{{ displayName }}</h1>
@@ -31,17 +22,6 @@
             </span>
           </div>
         </div>
-      </div>
-
-      <div class="profile-details">
-        <!-- <div>
-          <span class="label">Số điện thoại</span>
-          <strong>{{ phone }}</strong>
-        </div>
-        <div>
-          <span class="label">Tài khoản từ</span>
-          <strong>{{ createdAt }}</strong>
-        </div> -->
       </div>
 
       <div class="profile-actions">

@@ -1,33 +1,71 @@
-<div class="container" style="padding: 3rem 1.5rem; max-width: 1200px; margin: 0 auto;">
-  <h2 style="margin-bottom: 1.5rem;">Đơn hàng của tôi</h2>
+<div class="container" style="padding: 3rem 1.5rem; max-width: 1200px; margin: 0 auto">
+  <h2 style="margin-bottom: 1.5rem">Đơn hàng của tôi</h2>
 
-  <div *ngIf="orders.length > 0; else noOrders" class="order-table-container" style="background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow: hidden; margin-top: 1.5rem; border: 1px solid #f0f0f0;">
-    <table class="table" style="width: 100%; border-collapse: collapse; min-width: 800px;">
+  <div
+    *ngIf="orders.length > 0; else noOrders"
+    class="order-table-container"
+    style="
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      margin-top: 1.5rem;
+      border: 1px solid #f0f0f0;
+    "
+  >
+    <table class="table" style="width: 100%; border-collapse: collapse; min-width: 800px">
       <thead>
-        <tr style="background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
-          <th style="padding: 16px 20px; text-align: left; font-weight: 600; color: #374151;">Mã đơn</th>
-          <th style="padding: 16px 20px; text-align: left; font-weight: 600; color: #374151;">Ngày đặt</th>
-          <th style="padding: 16px 20px; text-align: left; font-weight: 600; color: #374151;">Tổng tiền</th>
-          <th style="padding: 16px 20px; text-align: left; font-weight: 600; color: #374151;">Trạng thái</th>
-          <th style="padding: 16px 20px; text-align: center; font-weight: 600; color: #374151;">Thao tác</th>
+        <tr style="background: #f9fafb; border-bottom: 1px solid #e5e7eb">
+          <th style="padding: 16px 20px; text-align: left; font-weight: 600; color: #374151">
+            Mã đơn
+          </th>
+          <th style="padding: 16px 20px; text-align: left; font-weight: 600; color: #374151">
+            Ngày đặt
+          </th>
+          <th style="padding: 16px 20px; text-align: left; font-weight: 600; color: #374151">
+            Tổng tiền
+          </th>
+          <th style="padding: 16px 20px; text-align: left; font-weight: 600; color: #374151">
+            Trạng thái
+          </th>
+          <th style="padding: 16px 20px; text-align: center; font-weight: 600; color: #374151">
+            Thao tác
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let order of orders" style="border-bottom: 1px solid #f3f4f6; transition: background 0.2s;">
-          <td style="padding: 20px;"><strong>#{{ order.code || order.id }}</strong></td>
-          <td style="padding: 20px;">{{ order.createdDate | date: 'dd/MM/yyyy HH:mm' }}</td>
-          <td style="padding: 20px; color: #be123c; font-weight: 600;">
+        <tr
+          *ngFor="let order of orders"
+          style="border-bottom: 1px solid #f3f4f6; transition: background 0.2s"
+        >
+          <td style="padding: 20px">
+            <strong>#{{ order.code || order.id }}</strong>
+          </td>
+          <td style="padding: 20px">{{ order.createdDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td style="padding: 20px; color: #be123c; font-weight: 600">
             {{ order.totalMoney | number }} đ
           </td>
-          <td style="padding: 20px;">
-            <span class="status-badge" style="padding: 6px 14px; border-radius: 9999px; background: #f3f4f6; font-size: 0.875rem; font-weight: 500; color: #374151; display: inline-block;">{{ getStatusLabel(order.status) }}</span>
+          <td style="padding: 20px">
+            <span class="status-badge" [ngClass]="'status-' + getStatusClass(order.status)">
+              {{ getStatusLabel(order.status) }}
+            </span>
           </td>
-          <td style="padding: 20px; text-align: center;">
-            <!-- Cho phép hủy nếu trạng thái là 1 (Chờ xác nhận) hoặc 2 (Đã xác nhận) -->
-            <button 
+          <td style="padding: 20px; text-align: center">
+            <!-- Cho phép hủy nếu trạng thái là 1 (Chờ thanh toán) hoặc 2 (Chờ xác nhận) -->
+            <button
               *ngIf="order.status === '1' || order.status === '2'"
               (click)="cancelOrder(order.id)"
-              style="background: #be123c; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.875rem;">
+              style="
+                background: #be123c;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 500;
+                font-size: 0.875rem;
+              "
+            >
               Hủy đơn
             </button>
           </td>
@@ -37,7 +75,7 @@
   </div>
 
   <ng-template #noOrders>
-    <div style="text-align: center; padding: 3rem; color: #666;">
+    <div style="text-align: center; padding: 3rem; color: #666">
       <p>Bạn chưa có đơn hàng nào.</p>
     </div>
   </ng-template>

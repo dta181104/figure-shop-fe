@@ -20,7 +20,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
     NzTableModule,
   ],
   templateUrl: './admin-user.component.html',
-  styleUrl: '../admin.component.css',
+  styleUrls: ['../admin.component.css', './admin-user.component.css'],
 })
 export class AdminUserComponent implements OnInit {
   private adminService = inject(AdminService);

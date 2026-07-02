@@ -26,6 +26,14 @@
         Quản lý vai trò
       </a>
       <a
+        routerLink="/admin/categories"
+        (click)="activeTab = 'categories'"
+        class="tab-btn"
+        [class.active]="activeTab === 'categories'"
+      >
+        Quản lý danh mục
+      </a>
+      <a
         routerLink="/admin/products"
         (click)="activeTab = 'products'"
         class="tab-btn"
@@ -41,14 +49,23 @@
       >
         Quản lý đơn hàng
       </a>
+      <a
+        routerLink="/admin/dashboard"
+        (click)="activeTab = 'dashboard'"
+        class="tab-btn"
+        [class.active]="activeTab === 'dashboard'"
+      >
+        Dashboard
+      </a>
     </nav>
 
-    <!-- Load API on-demand bằng cách sử dụng *ngIf hoặc router-outlet -->
     <div class="admin-content-area">
       <app-admin-user *ngIf="activeTab === 'users'"></app-admin-user>
       <app-admin-product *ngIf="activeTab === 'products'"></app-admin-product>
+      <app-admin-category *ngIf="activeTab === 'categories'"></app-admin-category>
       <app-admin-role *ngIf="activeTab === 'roles'"></app-admin-role>
       <app-admin-order *ngIf="activeTab === 'orders'"></app-admin-order>
+      <app-admin-dashboard *ngIf="activeTab === 'dashboard'"></app-admin-dashboard>
     </div>
   </ng-container>
 </section>

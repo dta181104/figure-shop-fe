@@ -22,14 +22,10 @@ export class CheckoutComponent {
     fullName: '',
     email: '',
     phone: '',
-    city: '',
-    ward: '',
     address: '',
   };
 
-  paymentMethod: string = 'cod'; // mặc định
-  cities: any[] = [];
-  wards: any[] = [];
+  paymentMethod: string = 'cod';
 
   constructor(
     private cartService: CartService,
@@ -53,20 +49,6 @@ export class CheckoutComponent {
       (sum, item) => sum + item.price * (item.quantity || 1),
       0
     );
-
-    this.loadCities();
-  }
-
-  loadCities() {
-    this.http.get<any[]>('assets/data/full_json_generated_data_vn_units.json').subscribe((data) => {
-      this.cities = data.filter((x) => x.Type === 'province');
-    });
-  }
-
-  onCityChange() {
-    const city = this.cities.find((c) => c.Name === this.customer.city);
-    this.wards = city ? city.Wards : [];
-    this.customer.ward = '';
   }
 
   confirmOrder() {
@@ -74,8 +56,6 @@ export class CheckoutComponent {
       !this.customer.fullName ||
       !this.customer.email ||
       !this.customer.phone ||
-      !this.customer.city ||
-      !this.customer.ward ||
       !this.customer.address
     ) {
       // alert('Vui lòng điền đầy đủ thông tin nhận hàng!');

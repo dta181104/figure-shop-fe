@@ -51,22 +51,6 @@
     </div>
 
     <div class="form-group">
-      <label>Tỉnh/Thành phố:</label>
-      <select [(ngModel)]="customer.city" (change)="onCityChange()" name="city" required>
-        <option value="">-- Chọn --</option>
-        <option *ngFor="let c of cities" [value]="c.Name">{{ c.Name }}</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Xã/Phường:</label>
-      <select [(ngModel)]="customer.ward" name="ward" required>
-        <option value="">-- Chọn --</option>
-        <option *ngFor="let w of wards" [value]="w.Name">{{ w.Name }}</option>
-      </select>
-    </div>
-
-    <div class="form-group">
       <label>Địa chỉ (Số nhà, tên đường):</label>
       <input type="text" [(ngModel)]="customer.address" name="address" required />
     </div>

@@ -1,0 +1,98 @@
+<div class="admin-grid">
+  <div class="card">
+    <div class="card-header">
+      <h3>Danh sách danh mục</h3>
+    </div>
+
+    <div class="alert alert-error" *ngIf="categoryError">{{ categoryError }}</div>
+    <div class="alert alert-success" *ngIf="categoryMessage">{{ categoryMessage }}</div>
+
+    <nz-table
+      #categoryTable
+      [nzData]="categories"
+      [nzLoading]="isLoading"
+      nzSize="middle"
+      [nzFrontPagination]="true"
+      [nzPageSize]="10"
+    >
+      <thead>
+        <tr>
+          <th nzWidth="60px">STT</th>
+          <th>Mã danh mục</th>
+          <th>Tên danh mục</th>
+          <th>Trạng thái</th>
+          <th nzRight>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let category of categoryTable.data; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>
+            <strong>{{ category.code || '---' }}</strong>
+          </td>
+          <td>{{ category.name || '---' }}</td>
+          <td>
+            <span class="badge-deleted" *ngIf="category.deleted">Đã xóa</span>
+            <span *ngIf="!category.deleted" style="color: #059669; font-weight: 600"
+              >Hoạt động</span
+            >
+          </td>
+          <td nzRight>
+            <div class="inline-actions">
+              <button class="action-btn action-edit" (click)="editCategory(category)">Sửa</button>
+              <button
+                *ngIf="!category.deleted"
+                class="action-btn action-delete"
+                (click)="deleteCategory(category)"
+              >
+                Xóa
+              </button>
+              <button
+                *ngIf="category.deleted"
+                class="action-btn action-restore"
+                (click)="restoreCategory(category)"
+              >
+                Khôi phục
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
+  <form class="card" (ngSubmit)="saveCategory()">
+    <h3>{{ editingCategoryCode ? 'Cập nhật danh mục' : 'Thêm danh mục mới' }}</h3>
+    <label>
+      <span>Mã danh mục</span>
+      <input name="categoryCode" [(ngModel)]="categoryForm.code" placeholder="VD: FIGURE, MODEL" />
+    </label>
+    <label>
+      <span>Tên danh mục</span>
+      <input
+        name="categoryName"
+        [(ngModel)]="categoryForm.name"
+        required
+        placeholder="Tên danh mục..."
+      />
+    </label>
+    <div class="actions">
+      <button type="submit" class="btn-primary" [disabled]="isSaving || !categoryForm.name.trim()">
+        {{ isSaving ? 'Đang lưu...' : 'Lưu danh mục' }}
+      </button>
+      <button type="button" class="btn-secondary" *ngIf="editingCategoryCode" (click)="resetForm()">
+        Hủy
+      </button>
+    </div>
+  </form>
+
+  <app-confirm-dialog
+    [visible]="confirmVisible"
+    [title]="confirmTitle"
+    [message]="confirmMessage"
+    [confirmText]="confirmText"
+    [variant]="confirmVariant"
+    (confirm)="confirmActionNow()"
+    (cancel)="closeConfirm()"
+  ></app-confirm-dialog>
+</div>

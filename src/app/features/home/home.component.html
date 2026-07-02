@@ -1,7 +1,6 @@
-<!-- Trang chủ Shop Gundam -->
+<!-- Trang chủ Shop -->
 <section class="hero">
   <picture>
-    <!-- Thay ảnh theo kích thước bạn có trong assets -->
     <source media="(min-width: 1024px)" srcset="assets/images/717760.jpg" />
     <source media="(min-width: 640px)" srcset="assets/images/717760.jpg" />
     <img class="hero__bg" src="assets/images/717760.jpg" alt="Gundam showcase background" />
@@ -11,85 +10,13 @@
 
   <div class="hero__content container">
     <h1 class="hero__title">FIGURE <span>SHOP</span></h1>
-    <!-- <p class="hero__subtitle">
-      Gunpla chính hãng – New Release, Limited, P-Bandai. Giao nhanh 24–48h.
-    </p>
-    <div class="hero__actions">
-      <a class="btn btn--primary" routerLink="/products">Shop Now</a>
-      <a class="btn btn--ghost" routerLink="/guides">Build Guides</a>
-    </div>
-    <ul class="hero__badges">
-      <li>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path
-            d="M12 2l3 7h7l-5.6 4.1L18.8 21 12 16.9 5.2 21l2.4-7.9L2 9h7z"
-          />
-        </svg>
-        Hàng chính hãng
-      </li>
-      <li>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 1l9 4v6c0 5-3.8 9.7-9 11-5.2-1.3-9-6-9-11V5l9-4z" />
-        </svg>
-        Đóng gói chống sốc
-      </li>
-      <li>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 12h18M3 6h18M3 18h18" />
-        </svg>
-        Free đổi size runner
-      </li>
-    </ul> -->
   </div>
 </section>
 
-<!-- Danh mục nhanh
-<section class="categories container">
-  <header class="section-header">
-    <h2>Shop by Grade</h2>
-    <a routerLink="/products" class="link">Xem tất cả</a>
-  </header>
-  <div class="categories__grid">
-    <a class="cat-card" routerLink="/products?grade=HG">
-      <img src="assets/categories/hg.jpg" alt="High Grade" />
-      <div class="cat-card__body">
-        <h3>HG (1/144)</h3>
-        <span class="pill">Dễ lắp</span>
-      </div>
-    </a>
-    <a class="cat-card" routerLink="/products?grade=RG">
-      <img src="assets/categories/rg.jpg" alt="Real Grade" />
-      <div class="cat-card__body">
-        <h3>RG (1/144)</h3>
-        <span class="pill">Chi tiết cao</span>
-      </div>
-    </a>
-    <a class="cat-card" routerLink="/products?grade=MG">
-      <img src="assets/categories/mg.jpg" alt="Master Grade" />
-      <div class="cat-card__body">
-        <h3>MG (1/100)</h3>
-        <span class="pill">Khung xương</span>
-      </div>
-    </a>
-    <a class="cat-card" routerLink="/products?grade=PG">
-      <img src="assets/categories/pg.jpg" alt="Perfect Grade" />
-      <div class="cat-card__body">
-        <h3>PG (1/60)</h3>
-        <span class="pill">Siêu to</span>
-      </div>
-    </a>
-  </div>
-</section> -->
-
-<!-- Sản phẩm nổi bật -->
+<!-- Sản phẩm -->
 <section class="featured container" id="products">
   <header class="section-header">
     <h2>Sản phẩm</h2>
-    <div class="segmented">
-      <!-- <button class="segmented__item segmented__item--active" type="button">New</button>
-      <button class="segmented__item" type="button">Best Sellers</button>
-      <button class="segmented__item" type="button">Sale</button> -->
-    </div>
   </header>
 
   <!-- Bộ lọc sản phẩm -->
@@ -184,7 +111,6 @@
     </form>
   </section>
 
-  <!-- Nếu sau này bạn bind *ngFor từ API thì thay block card tĩnh này -->
   <div
     *ngIf="products.length > 0; else noProducts"
     class="product-grid"
@@ -203,6 +129,7 @@
           style="
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -250,66 +177,6 @@
     </nz-pagination>
   </div>
 </section>
-
-<!-- Banner khuyến mãi -->
-<!-- <section class="promo">
-  <div class="promo__inner container">
-    <div class="promo__text">
-      <h3>Flash Sale cuối tuần</h3>
-      <p>Giảm đến 20% cho series UC – số lượng có hạn.</p>
-      <a class="btn btn--white" routerLink="/sale">Săn ngay</a>
-    </div>
-    <img
-      class="promo__img"
-      src="assets/banners/uc-sale.png"
-      alt="Universal Century sale"
-    />
-  </div>
-</section> -->
-
-<!-- Blog / Hướng dẫn -->
-<!-- <section class="blog container">
-  <header class="section-header">
-    <h2>Hướng dẫn & Tin tức</h2>
-    <a routerLink="/blog" class="link">Xem blog</a>
-  </header>
-  <div class="blog__grid">
-    <a class="blog-card" routerLink="/blog/panel-lining-guide">
-      <img src="assets/blog/panel-lining.jpg" alt="Panel lining guide" />
-      <h3>Panel Lining: 5 phút nâng tầm kit</h3>
-      <p>Mẹo chọn bút, làm sạch & bảo quản.</p>
-    </a>
-    <a class="blog-card" routerLink="/blog/top-10-rg">
-      <img src="assets/blog/top-rg.jpg" alt="Top 10 RG" />
-      <h3>Top 10 RG đáng mua 2025</h3>
-      <p>Danh sách cập nhật theo độ khó & độ đẹp.</p>
-    </a>
-    <a class="blog-card" routerLink="/blog/clear-coat">
-      <img src="assets/blog/clear-coat.jpg" alt="Clear coat finishes" />
-      <h3>Clear Coat: Gloss vs Matte</h3>
-      <p>Khi nào nên xịt bóng/mờ cho Gunpla.</p>
-    </a>
-  </div>
-</section> -->
-
-<!-- Newsletter -->
-<!-- <section class="newsletter">
-  <div class="newsletter__inner container">
-    <div>
-      <h3>Nhận tin ra mắt & ưu đãi</h3>
-      <p>Đừng bỏ lỡ hàng P-Bandai hiếm – vào trước là có!</p>
-    </div>
-    <form class="newsletter__form" (submit)="$event.preventDefault()">
-      <input
-        class="input"
-        type="email"
-        placeholder="Email của bạn"
-        aria-label="Email"
-      />
-      <button class="btn btn--primary" type="submit">Đăng ký</button>
-    </form>
-  </div>
-</section> -->
 
 <!-- Footer rút gọn -->
 <!-- <footer class="footer">
