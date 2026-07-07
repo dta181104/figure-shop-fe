@@ -1,6 +1,5 @@
 ﻿import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../core/services/user.service';
 
@@ -26,7 +25,7 @@ type ApiResponse<T> = {
 @Component({
   selector: 'app-account',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.css'],
 })

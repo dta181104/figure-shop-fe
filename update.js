@@ -1,1 +1,0 @@
-const fs = require('fs'); const content = Buffer.from(fs.readFileSync('Front_end/base64.txt', 'utf8'), 'base64').toString('utf8'); fs.writeFileSync('Front_end/src/app/features/admin/admin.component.ts', content);

@@ -1,4 +1,3 @@
-// src/app/types/productItem.ts
 export interface ProductItems {
   id: number;
   code?: string;

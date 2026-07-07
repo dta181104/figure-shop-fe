@@ -3,15 +3,16 @@ import { Subscription, map } from 'rxjs';
 import { ProductItems } from '@/app/core/models/product-item.model';
 import { ProductService } from '@/app/core/services/product.service';
 import { CategoryService } from '@/app/core/services/category.service';
+import { NotificationService } from '@/app/core/services/notification.service';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, NzPaginationModule],
+  imports: [CommonModule, FormsModule, NzPaginationModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
@@ -39,7 +40,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private productService: ProductService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -106,7 +108,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.params.maxPrice !== null &&
       this.params.maxPrice < this.params.minPrice
     ) {
-      alert('Giá đến phải lớn hơn hoặc bằng giá từ. Vui lòng kiểm tra lại!');
+      this.notificationService.show('warning', 'Giá đến phải lớn hơn hoặc bằng giá từ');
       return;
     }
     this.params.pageIndex = 1;

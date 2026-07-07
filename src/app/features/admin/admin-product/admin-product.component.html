@@ -178,9 +178,17 @@
         accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/*"
         (change)="onMainImageSelected($event)"
       />
-      <small class="muted">Chỉ nhận ảnh .jpg, .jpeg, .png, .webp, .gif, .bmp, .avif. Tối đa 10MB.</small>
+      <small class="muted"
+        >Chỉ nhận ảnh .jpg, .jpeg, .png, .webp, .gif, .bmp, .avif. Tối đa 10MB.</small
+      >
       <small *ngIf="mainImageFileName">Đã chọn: {{ mainImageFileName }}</small>
     </label>
+    <div *ngIf="mainImagePreviewUrl" class="image-preview-container">
+      <p class="preview-label">Xem trước:</p>
+      <a [href]="mainImagePreviewUrl" target="_blank" rel="noopener noreferrer">
+        <img [src]="mainImagePreviewUrl" alt="Xem trước ảnh chính" class="image-preview" />
+      </a>
+    </div>
     <label>
       <span>File mô hình GLB</span>
       <input type="file" accept=".glb,model/gltf-binary" (change)="onModelFileSelected($event)" />

@@ -43,7 +43,6 @@ export const routes: Routes = [
     path: 'product/:id',
     loadComponent: loadDetailComponent,
   },
-  // {path: 'create', component: CreateComponent}
   {
     path: 'login',
     loadComponent: loadLoginComponent,

@@ -1,4 +1,3 @@
-// src/app/models/product.model.ts
 export interface Product {
   id: number;
   code?: string;
@@ -22,8 +21,8 @@ export interface Product {
 // Generic API response
 export interface ApiResponse<T> {
   result: T;
-  code?: number; // nếu API có trả về code
-  message?: string; // nếu API có trả về message
+  code?: number;
+  message?: string;
 }
 
 // Page wrapper

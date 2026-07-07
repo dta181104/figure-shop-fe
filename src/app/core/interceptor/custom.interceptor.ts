@@ -15,7 +15,7 @@ export const customInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-    token = localStorage.getItem('access_token'); // phải trùng với key ở login
+    token = localStorage.getItem('access_token');
   }
 
   if (token) {

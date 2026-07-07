@@ -90,7 +90,7 @@ export class AdminDashboardComponent implements OnInit {
         align: 'left',
         style: {
           color: '#fffff',
-          fontWeight: 'normal', // THÊM DÒNG NÀY: Tắt in đậm tiêu đề
+          fontWeight: 'normal',
           fontSize: '20px',
         },
       },
@@ -100,14 +100,14 @@ export class AdminDashboardComponent implements OnInit {
           text: 'Số đơn',
           style: {
             color: '#fffff',
-            fontWeight: 'normal', // THÊM DÒNG NÀY: Tắt in đậm tiêu đề
+            fontWeight: 'normal',
             fontSize: '16px',
           },
         },
         decimalsInFloat: 0, // Khai báo không lấy số thập phân
         labels: {
           formatter: (val) => {
-            // Chỉ hiển thị các mốc là số nguyên, mốc lẻ như .5 sẽ trả về rỗng để ẩn đi
+            // Chỉ hiển thị các mốc là số nguyên, mốc lẻ như 0.5 sẽ trả về rỗng để ẩn đi
             return val % 1 === 0 ? val.toString() : '';
           },
         },
@@ -124,7 +124,7 @@ export class AdminDashboardComponent implements OnInit {
         align: 'left',
         style: {
           color: '#fffff',
-          fontWeight: 'normal', // THÊM DÒNG NÀY: Tắt in đậm tiêu đề
+          fontWeight: 'normal',
           fontSize: '20px',
         },
       },

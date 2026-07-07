@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { ProductService } from '@/app/core/services/product.service';
 import { CategoryService } from '@/app/core/services/category.service';
+import { NotificationService } from '@/app/core/services/notification.service';
 import { ProductItems } from '@/app/core/models/product-item.model';
 import { ConfirmDialogComponent } from '@/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -16,9 +17,10 @@ import { NzTableModule } from 'ng-zorro-antd/table';
   styleUrls: ['../admin.component.css', './admin-product.component.css'],
 })
 export class AdminProductComponent implements OnInit {
-  private readonly maxUploadSize = 10 * 1024 * 1024;
+  private readonly maxUploadSize = 10 * 1024 * 1024; // 10MB
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
+  private notificationService = inject(NotificationService);
 
   products: ProductItems[] = [];
   categories: any[] = [];
@@ -31,6 +33,7 @@ export class AdminProductComponent implements OnInit {
   imageError = '';
   mainImageFileName = '';
   modelFileName = '';
+  mainImagePreviewUrl: string | null = null;
 
   // Filters
   filterParams = {
@@ -115,13 +118,13 @@ export class AdminProductComponent implements OnInit {
   }
 
   applyFilters(): void {
-    // Kiểm tra logic: Giá đến phải lớn hơn hoặc bằng giá từ
     if (
       this.filterParams.minPrice !== null &&
       this.filterParams.maxPrice !== null &&
       this.filterParams.maxPrice < this.filterParams.minPrice
     ) {
       this.priceError = 'Giá đến phải lớn hơn hoặc bằng giá từ';
+      this.notificationService.show('warning', 'Giá đến phải lớn hơn hoặc bằng giá từ');
       return;
     }
     this.priceError = '';
@@ -230,17 +233,44 @@ export class AdminProductComponent implements OnInit {
   }
 
   editProduct(product: ProductItems): void {
+    if (!product.code) return;
+
     this.scrollToTop();
+    this.resetProductForm();
     this.editingProductCode = product.code || '';
-    this.productForm = {
-      code: product.code || '',
-      name: product.name || '',
-      description: product.description || '',
-      price: product.price || null,
-      quantity: product.quantity || null,
-      status: product.status || 1,
-      categoryId: (product as any).category?.id || (product as any).categoryId || null,
-    };
+    this.isSavingProduct = true; // Tận dụng cờ loading có sẵn
+
+    this.productService
+      .getProductById(product.id.toString())
+      .pipe(finalize(() => (this.isSavingProduct = false)))
+      .subscribe({
+        next: (res) => {
+          const detailedProduct = res.result;
+          this.productForm = {
+            code: detailedProduct.code || '',
+            name: detailedProduct.name || '',
+            description: detailedProduct.description || '',
+            price: detailedProduct.price ?? null,
+            quantity: detailedProduct.quantity ?? null,
+            status: detailedProduct.status ?? 1,
+            categoryId: detailedProduct.categoryId ?? null,
+          };
+          const mainImage = detailedProduct.images?.find((img) => img.imageMain);
+          if (mainImage?.imageUrl) {
+            this.mainImagePreviewUrl = mainImage.imageUrl;
+            this.mainImageFileName = mainImage.imageUrl.split('/').pop() || '';
+          } else {
+            this.mainImagePreviewUrl = null;
+            this.mainImageFileName = '';
+          }
+          this.modelFileName =
+            detailedProduct.images
+              ?.find((img) => !img.imageMain)
+              ?.imageUrl?.split('/')
+              .pop() || '';
+        },
+        error: () => this.notificationService.show('error', 'Không thể tải chi tiết sản phẩm.'),
+      });
   }
 
   deleteProduct(product: ProductItems): void {
@@ -276,6 +306,7 @@ export class AdminProductComponent implements OnInit {
     this.imageError = '';
     this.mainImageFileName = '';
     this.modelFileName = '';
+    this.mainImagePreviewUrl = null;
     this.mainImageFile = null;
     this.modelFile = null;
     this.productForm = {
@@ -297,6 +328,7 @@ export class AdminProductComponent implements OnInit {
     if (!file) {
       this.mainImageFile = null;
       this.mainImageFileName = '';
+      this.mainImagePreviewUrl = null;
       return;
     }
 
@@ -309,6 +341,7 @@ export class AdminProductComponent implements OnInit {
 
     this.mainImageFile = file;
     this.mainImageFileName = file.name;
+    this.mainImagePreviewUrl = URL.createObjectURL(file);
   }
 
   onModelFileSelected(event: Event): void {

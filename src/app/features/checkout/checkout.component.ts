@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProductItems } from '@/app/core/models/product-item.model';
-import { HttpClient } from '@angular/common/http';
 import { CartService } from '@/app/core/services/cart.service';
 import { NotificationService } from '@/app/core/services/notification.service';
+import { PaymentService } from '@/app/core/services/payment.service';
 
 @Component({
   selector: 'app-checkout',
@@ -30,8 +30,8 @@ export class CheckoutComponent {
   constructor(
     private cartService: CartService,
     private router: Router,
-    private http: HttpClient,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private paymentService: PaymentService
   ) {}
 
   ngOnInit() {
@@ -78,24 +78,16 @@ export class CheckoutComponent {
 
       localStorage.setItem('checkoutItemIds', JSON.stringify(itemIds));
 
-      this.http
-        .post(`payment/submitOrder`, null, {
-          params: { amount: amount.toString(), orderInfo },
-          responseType: 'text',
-        })
-        .subscribe({
-          next: (paymentUrl) => {
-            window.location.href = paymentUrl;
-          },
-          error: (err) => {
-            console.error(err);
-            // alert('Không thể kết nối VNPay. Vui lòng thử lại sau!');
-            this.notificationService.show(
-              'error',
-              'Không thể kết nối VNPay. Vui lòng thử lại sau!'
-            );
-          },
-        });
+      this.paymentService.submitOrder({ amount, orderInfo }).subscribe({
+        next: (paymentUrl) => {
+          window.location.href = paymentUrl;
+        },
+        error: (err) => {
+          console.error(err);
+          // alert('Không thể kết nối VNPay. Vui lòng thử lại sau!');
+          this.notificationService.show('error', 'Không thể kết nối VNPay. Vui lòng thử lại sau!');
+        },
+      });
       return;
     }
 
@@ -108,27 +100,23 @@ export class CheckoutComponent {
       const itemIds = this.selectedItems.map((item) => item.id);
       localStorage.setItem('checkoutItemIds', JSON.stringify(itemIds));
 
-      this.http
-        .post<any>(`momo`, null, {
-          params: { amount: amount.toString(), orderInfo },
-        })
-        .subscribe({
-          next: (res) => {
-            console.log('MoMo response:', res);
-            if (res && res.payUrl) {
-              window.location.href = res.payUrl;
-            } else if (res && res.message) {
-              // alert('MoMo trả về: ' + res.message);
-            } else {
-              // alert('Không nhận được payUrl từ MoMo.');
-            }
-          },
-          error: (err) => {
-            console.error(err);
-            // alert('Không thể kết nối MoMo. Vui lòng thử lại sau!');
-            this.notificationService.show('error', 'Không thể kết nối MoMo. Vui lòng thử lại sau!');
-          },
-        });
+      this.paymentService.createMomoPayment({ amount, orderInfo }).subscribe({
+        next: (res) => {
+          console.log('MoMo response:', res);
+          if (res && res.payUrl) {
+            window.location.href = res.payUrl;
+          } else if (res && res.message) {
+            // alert('MoMo trả về: ' + res.message);
+          } else {
+            // alert('Không nhận được payUrl từ MoMo.');
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          // alert('Không thể kết nối MoMo. Vui lòng thử lại sau!');
+          this.notificationService.show('error', 'Không thể kết nối MoMo. Vui lòng thử lại sau!');
+        },
+      });
       return;
     }
 
