@@ -29,3 +29,11 @@
   justify-content: flex-start;
   margin-top: 4px;
 }
+
+.selected-file {
+  display: block;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

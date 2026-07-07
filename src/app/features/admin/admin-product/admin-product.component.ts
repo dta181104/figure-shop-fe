@@ -26,6 +26,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 })
 export class AdminProductComponent implements OnInit {
   @ViewChild('productFormElement') productFormElement!: ElementRef;
+  @ViewChild('mainImageInput') mainImageInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('modelInput') modelInput!: ElementRef<HTMLInputElement>;
 
   private readonly maxUploadSize = 10 * 1024 * 1024; // 10MB
   private productService = inject(ProductService);
@@ -244,6 +246,7 @@ export class AdminProductComponent implements OnInit {
   }
 
   editProduct(product: ProductItems): void {
+    this.productMessage = '';
     if (!product.code) return;
 
     this.scrollToForm();
@@ -318,6 +321,8 @@ export class AdminProductComponent implements OnInit {
   resetProductForm(): void {
     this.editingProductCode = '';
     this.imageError = '';
+    this.mainImageInput.nativeElement.value = '';
+    this.modelInput.nativeElement.value = '';
     this.mainImageFileName = '';
     this.modelFileName = '';
     this.mainImagePreviewUrl = null;
@@ -347,7 +352,7 @@ export class AdminProductComponent implements OnInit {
       return;
     }
 
-    const error = this.validateImageFile(file, true);
+    const error = this.validateImageFile(file);
     if (error) {
       this.imageError = error;
       target.value = '';
@@ -383,13 +388,13 @@ export class AdminProductComponent implements OnInit {
     this.modelPreviewUrl = URL.createObjectURL(file);
   }
 
-  private validateImageFile(file: File, isMainImage: boolean): string | null {
+  private validateImageFile(file: File): string | null {
     if (file.size > this.maxUploadSize) {
-      return `File ${isMainImage ? 'ảnh chính' : 'mô hình'} phải nhỏ hơn hoặc bằng 10MB.`;
+      return `File ảnh chính phải nhỏ hơn hoặc bằng 10MB.`;
     }
 
     if (!file.type.startsWith('image/')) {
-      return 'Ảnh chính chỉ chấp nhận file ảnh.';
+      return 'Ảnh chính chỉ chấp nhận file ảnh 2D.';
     }
 
     return null;
