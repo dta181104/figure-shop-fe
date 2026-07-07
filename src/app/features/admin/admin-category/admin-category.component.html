@@ -61,7 +61,7 @@
     </nz-table>
   </div>
 
-  <form class="card" (ngSubmit)="saveCategory()">
+  <form class="card" (ngSubmit)="saveCategory()" #categoryFormElement>
     <h3>{{ editingCategoryCode ? 'Cập nhật danh mục' : 'Thêm danh mục mới' }}</h3>
     <label>
       <span>Mã danh mục</span>

@@ -1,4 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
@@ -15,8 +22,11 @@ import { NzTableModule } from 'ng-zorro-antd/table';
   imports: [CommonModule, FormsModule, ConfirmDialogComponent, NzTableModule],
   templateUrl: './admin-product.component.html',
   styleUrls: ['../admin.component.css', './admin-product.component.css'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AdminProductComponent implements OnInit {
+  @ViewChild('productFormElement') productFormElement!: ElementRef;
+
   private readonly maxUploadSize = 10 * 1024 * 1024; // 10MB
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
@@ -34,6 +44,7 @@ export class AdminProductComponent implements OnInit {
   mainImageFileName = '';
   modelFileName = '';
   mainImagePreviewUrl: string | null = null;
+  modelPreviewUrl: string | null = null;
 
   // Filters
   filterParams = {
@@ -235,7 +246,7 @@ export class AdminProductComponent implements OnInit {
   editProduct(product: ProductItems): void {
     if (!product.code) return;
 
-    this.scrollToTop();
+    this.scrollToForm();
     this.resetProductForm();
     this.editingProductCode = product.code || '';
     this.isSavingProduct = true; // Tận dụng cờ loading có sẵn
@@ -263,11 +274,14 @@ export class AdminProductComponent implements OnInit {
             this.mainImagePreviewUrl = null;
             this.mainImageFileName = '';
           }
-          this.modelFileName =
-            detailedProduct.images
-              ?.find((img) => !img.imageMain)
-              ?.imageUrl?.split('/')
-              .pop() || '';
+          const modelImage = detailedProduct.images?.find((img) => !img.imageMain);
+          if (modelImage?.imageUrl) {
+            this.modelPreviewUrl = modelImage.imageUrl;
+            this.modelFileName = modelImage.imageUrl.split('/').pop() || '';
+          } else {
+            this.modelPreviewUrl = null;
+            this.modelFileName = '';
+          }
         },
         error: () => this.notificationService.show('error', 'Không thể tải chi tiết sản phẩm.'),
       });
@@ -307,6 +321,7 @@ export class AdminProductComponent implements OnInit {
     this.mainImageFileName = '';
     this.modelFileName = '';
     this.mainImagePreviewUrl = null;
+    this.modelPreviewUrl = null;
     this.mainImageFile = null;
     this.modelFile = null;
     this.productForm = {
@@ -352,6 +367,7 @@ export class AdminProductComponent implements OnInit {
     if (!file) {
       this.modelFile = null;
       this.modelFileName = '';
+      this.modelPreviewUrl = null;
       return;
     }
 
@@ -364,6 +380,7 @@ export class AdminProductComponent implements OnInit {
 
     this.modelFile = file;
     this.modelFileName = file.name;
+    this.modelPreviewUrl = URL.createObjectURL(file);
   }
 
   private validateImageFile(file: File, isMainImage: boolean): string | null {
@@ -439,5 +456,9 @@ export class AdminProductComponent implements OnInit {
 
   private scrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  private scrollToForm(): void {
+    this.productFormElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }

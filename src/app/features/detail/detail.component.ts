@@ -38,10 +38,8 @@ export class DetailComponent implements OnInit {
     private router: Router
   ) {}
 
-  // Đường dẫn trỏ tới file mô hình nằm trong thư mục assets
-  public modelUrl: string = 'assets/images/gundam_unicorn-compressed.glb';
+  public modelUrl: string | undefined;
 
-  // Lấy đối tượng model-viewer từ giao diện để xử lý trong code TS nếu cần
   @ViewChild('viewer', { static: false }) viewerRef!: ElementRef;
 
   ngOnInit(): void {
@@ -60,6 +58,7 @@ export class DetailComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
         this.product = res.result;
+        this.modelUrl = this.product?.images?.find((img) => !img.imageMain)?.imageUrl;
         this.selectedImageUrl = null;
         this.loadSuggestedProducts();
       });

@@ -58,7 +58,7 @@
     </nz-table>
   </div>
 
-  <form class="card" (ngSubmit)="saveRole()">
+  <form class="card" (ngSubmit)="saveRole()" #roleFormElement>
     <h3>{{ editingRoleId ? 'Cập nhật vai trò' : 'Thêm vai trò mới' }}</h3>
     <label>
       <span>Mã vai trò</span>

@@ -44,38 +44,44 @@
 
     <nz-spin [nzSpinning]="isChartLoading">
       <div class="charts-wrapper" style="min-height: 500px">
-        <div
-          class="order-chart"
-          style="margin-bottom: 32px"
-          *ngIf="orderChartOptions.series.length > 0"
-        >
-          <apx-chart
-            [series]="orderChartOptions.series"
-            [chart]="orderChartOptions.chart"
-            [xaxis]="orderChartOptions.xaxis"
-            [yaxis]="orderChartOptions.yaxis"
-            [dataLabels]="orderChartOptions.dataLabels"
-            [stroke]="orderChartOptions.stroke!"
-            [colors]="orderChartOptions.colors!"
-            [title]="orderChartOptions.title"
+        @if (isBrowser) {
+          <div
+            class="order-chart"
+            style="margin-bottom: 32px"
+            *ngIf="orderChartOptions.series.length > 0"
           >
-          </apx-chart>
-        </div>
+            <apx-chart
+              [series]="orderChartOptions.series"
+              [chart]="orderChartOptions.chart"
+              [xaxis]="orderChartOptions.xaxis"
+              [yaxis]="orderChartOptions.yaxis"
+              [dataLabels]="orderChartOptions.dataLabels"
+              [stroke]="orderChartOptions.stroke!"
+              [colors]="orderChartOptions.colors!"
+              [title]="orderChartOptions.title"
+            >
+            </apx-chart>
+          </div>
 
-        <hr style="border: none; border-top: 1px dashed #f0f0f0; margin-bottom: 32px" />
+          <hr style="border: none; border-top: 1px dashed #f0f0f0; margin-bottom: 32px" />
 
-        <div class="revenue-chart" *ngIf="revenueChartOptions.series.length > 0">
-          <apx-chart
-            [series]="revenueChartOptions.series"
-            [chart]="revenueChartOptions.chart"
-            [xaxis]="revenueChartOptions.xaxis"
-            [yaxis]="revenueChartOptions.yaxis"
-            [dataLabels]="revenueChartOptions.dataLabels"
-            [colors]="revenueChartOptions.colors!"
-            [title]="revenueChartOptions.title"
-          >
-          </apx-chart>
-        </div>
+          <div class="revenue-chart" *ngIf="revenueChartOptions.series.length > 0">
+            <apx-chart
+              [series]="revenueChartOptions.series"
+              [chart]="revenueChartOptions.chart"
+              [xaxis]="revenueChartOptions.xaxis"
+              [yaxis]="revenueChartOptions.yaxis"
+              [dataLabels]="revenueChartOptions.dataLabels"
+              [colors]="revenueChartOptions.colors!"
+              [title]="revenueChartOptions.title"
+            >
+            </apx-chart>
+          </div>
+        } @else {
+          <div style="height: 250px; display: flex; align-items: center; justify-content: center">
+            <nz-spin nzSimple></nz-spin>
+          </div>
+        }
       </div>
     </nz-spin>
   </nz-card>

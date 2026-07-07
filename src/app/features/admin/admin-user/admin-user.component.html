@@ -102,7 +102,7 @@
     </nz-table>
   </div>
 
-  <form class="card" (ngSubmit)="saveUser()">
+  <form class="card" (ngSubmit)="saveUser()" #userFormElement>
     <h3>{{ editingUserCode ? 'Cập nhật người dùng' : 'Tạo người dùng mới' }}</h3>
     <label>
       <span>Username</span>

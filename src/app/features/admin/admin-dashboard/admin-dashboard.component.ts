@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ViewChild } from '@angular/core';
+import { Component, OnInit, inject, ViewChild, afterNextRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
@@ -53,14 +53,14 @@ export class AdminDashboardComponent implements OnInit {
   private statisticService = inject(StatisticService);
   private message = inject(NzMessageService);
 
-  // States
+  isBrowser = false;
+
   totalUsers = 0;
   totalProducts = 0;
   isGeneralLoading = false;
   isChartLoading = false;
   dashboardError = '';
 
-  // Filter
   selectedTimeFrame = 'STATISTIC_BILL_90_DAYS';
   timeFrames = [
     { value: 'STATISTIC_BILL_90_DAYS', label: '90 ngày qua' },
@@ -68,11 +68,14 @@ export class AdminDashboardComponent implements OnInit {
     { value: 'STATISTIC_BILL_3_YEARS', label: '3 năm qua' },
   ];
 
-  // Khai báo 2 cấu hình biểu đồ riêng biệt
   public orderChartOptions: ChartOptions;
   public revenueChartOptions: ChartOptions;
 
   constructor() {
+    afterNextRender(() => {
+      this.isBrowser = true;
+    });
+    
     this.orderChartOptions = {
       series: [],
       chart: {
@@ -107,7 +110,7 @@ export class AdminDashboardComponent implements OnInit {
         decimalsInFloat: 0, // Khai báo không lấy số thập phân
         labels: {
           formatter: (val) => {
-            // Chỉ hiển thị các mốc là số nguyên, mốc lẻ như 0.5 sẽ trả về rỗng để ẩn đi
+            // Chỉ hiển thị các mốc là số nguyên
             return val % 1 === 0 ? val.toString() : '';
           },
         },

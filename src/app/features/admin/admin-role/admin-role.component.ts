@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RoleService } from '@/app/core/services/role.service';
@@ -16,6 +16,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
   styleUrl: '../admin.component.css',
 })
 export class AdminRoleComponent implements OnInit {
+  @ViewChild('roleFormElement') roleFormElement!: ElementRef;
+
   private roleService = inject(RoleService);
   private permissionService = inject(PermissionService);
 
@@ -96,7 +98,7 @@ export class AdminRoleComponent implements OnInit {
   }
 
   editRole(role: any): void {
-    this.scrollToTop();
+    this.scrollToForm();
     // Đảm bảo lấy ID từ role. Nếu API trả về trường khác (như code), hãy kiểm tra lại
     this.editingRoleId = role.id ?? null;
     this.roleForm = {
@@ -159,5 +161,9 @@ export class AdminRoleComponent implements OnInit {
 
   private scrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  private scrollToForm(): void {
+    this.roleFormElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }

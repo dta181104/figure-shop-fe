@@ -21,7 +21,7 @@
     <button class="add-cart-btn" (click)="addToCart()">Thêm vào giỏ hàng</button>
   </div>
 
-  <div class="viewer-container">
+  <div *ngIf="modelUrl" class="viewer-container">
     <p>Ảnh 3D của sản phẩm</p>
     <model-viewer
       [src]="modelUrl"

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { CategoryService } from '@/app/core/services/category.service';
@@ -15,6 +15,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
   styleUrl: '../admin.component.css',
 })
 export class AdminCategoryComponent implements OnInit {
+  @ViewChild('categoryFormElement') categoryFormElement!: ElementRef;
+
   private categoryService = inject(CategoryService);
 
   categories: CategoryItem[] = [];
@@ -95,7 +97,7 @@ export class AdminCategoryComponent implements OnInit {
   }
 
   editCategory(category: CategoryItem): void {
-    this.scrollToTop();
+    this.scrollToForm();
     this.editingCategoryCode = category.code || '';
     this.categoryForm = {
       code: category.code || '',
@@ -159,5 +161,9 @@ export class AdminCategoryComponent implements OnInit {
 
   private scrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  private scrollToForm(): void {
+    this.categoryFormElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }

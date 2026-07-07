@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
@@ -23,6 +23,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
   styleUrls: ['../admin.component.css', './admin-user.component.css'],
 })
 export class AdminUserComponent implements OnInit {
+  @ViewChild('userFormElement') userFormElement!: ElementRef;
+
   private adminService = inject(AdminService);
 
   users: AdminUser[] = [];
@@ -157,7 +159,7 @@ export class AdminUserComponent implements OnInit {
   }
 
   editUser(user: AdminUser): void {
-    this.scrollToTop();
+    this.scrollToForm();
     this.editingUserCode = user.code || '';
     this.userForm = {
       username: user.username || '',
@@ -242,5 +244,9 @@ export class AdminUserComponent implements OnInit {
 
   private scrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  private scrollToForm(): void {
+    this.userFormElement.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
