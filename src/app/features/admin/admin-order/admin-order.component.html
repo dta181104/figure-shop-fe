@@ -132,6 +132,16 @@
   </div>
 </div>
 
+<app-confirm-dialog
+  [visible]="confirmVisible"
+  [title]="confirmTitle"
+  [message]="confirmMessage"
+  [confirmText]="confirmText"
+  [variant]="confirmVariant"
+  (confirm)="confirmActionNow()"
+  (close)="closeConfirm()"
+></app-confirm-dialog>  
+
 <style>
   .filter-form {
     display: grid;

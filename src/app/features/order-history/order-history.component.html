@@ -39,7 +39,13 @@
           style="border-bottom: 1px solid #f3f4f6; transition: background 0.2s"
         >
           <td style="padding: 20px">
-            <strong>#{{ order.code || order.id }}</strong>
+            <a
+              [routerLink]="['/order-history', order.id]"
+              style="color: #1d4ed8; font-weight: 600; text-decoration: none; cursor: pointer"
+              class="order-code-link"
+            >
+              <strong>#{{ order.code || order.id }}</strong>
+            </a>
           </td>
           <td style="padding: 20px">{{ order.createdDate | date: 'dd/MM/yyyy HH:mm' }}</td>
           <td style="padding: 20px; color: #be123c; font-weight: 600">
@@ -80,3 +86,14 @@
     </div>
   </ng-template>
 </div>
+
+<app-confirm-dialog
+  [visible]="confirmVisible"
+  [title]="confirmTitle"
+  [message]="confirmMessage"
+  [confirmText]="confirmText"
+  cancelText="Hủy"
+  [variant]="confirmVariant"
+  (confirm)="confirmActionNow()"
+  (cancel)="closeConfirm()"
+></app-confirm-dialog>

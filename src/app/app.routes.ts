@@ -33,8 +33,16 @@ const loadAccountComponent = () =>
 const loadOrderHistoryComponent = () =>
   import('./features/order-history/order-history.component').then((m) => m.OrderHistoryComponent);
 
+const loadOrderDetailComponent = () =>
+  import('./features/order-history/order-detail.component').then((m) => m.OrderDetailComponent);
+
 const loadAdminComponent = () =>
   import('./features/admin/admin.component').then((m) => m.AdminComponent);
+
+const loadAdminOrderDetailComponent = () =>
+  import('./features/admin/admin-order/admin-order-detail.component').then(
+    (m) => m.AdminOrderDetailComponent
+  );
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -58,6 +66,10 @@ export const routes: Routes = [
   {
     path: 'order-history',
     loadComponent: loadOrderHistoryComponent,
+  },
+  {
+    path: 'order-history/:id',
+    loadComponent: loadOrderDetailComponent,
   },
   {
     path: 'admin',
@@ -88,6 +100,10 @@ export const routes: Routes = [
     path: 'admin/orders',
     loadComponent: loadAdminComponent,
     data: { tab: 'orders' },
+  },
+  {
+    path: 'admin/orders/:id',
+    loadComponent: loadAdminOrderDetailComponent,
   },
   {
     path: 'admin/dashboard',

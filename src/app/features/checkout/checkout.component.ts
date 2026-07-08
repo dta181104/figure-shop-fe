@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ProductItems } from '@/app/core/models/product-item.model';
 import { CartService } from '@/app/core/services/cart.service';
 import { NotificationService } from '@/app/core/services/notification.service';
+import { OrderService } from '@/app/core/services/order.service';
 import { PaymentService } from '@/app/core/services/payment.service';
 
 @Component({
@@ -31,7 +32,8 @@ export class CheckoutComponent {
     private cartService: CartService,
     private router: Router,
     private notificationService: NotificationService,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private orderService: OrderService
   ) {}
 
   ngOnInit() {
@@ -39,16 +41,35 @@ export class CheckoutComponent {
     this.selectedItems = nav.items || [];
 
     if (!this.selectedItems.length) {
-      // alert('Chưa có sản phẩm nào được chọn để thanh toán!');
       this.notificationService.show('warning', 'Chưa có sản phẩm nào được chọn để thanh toán!');
       this.router.navigate(['/cart']);
       return;
     }
 
+    this.loadCustomerInfo();
+
     this.total = this.selectedItems.reduce(
       (sum, item) => sum + item.price * (item.quantity || 1),
       0
     );
+  }
+
+  private loadCustomerInfo(): void {
+    try {
+      const profileRaw = localStorage.getItem('user_profile');
+      if (profileRaw) {
+        const profile = JSON.parse(profileRaw);
+        const user = profile?.result ?? profile; // Handle both { result: ... } and direct object
+        if (user) {
+          this.customer.fullName = user.name || '';
+          this.customer.email = user.email || '';
+          this.customer.phone = user.phone || '';
+          this.customer.address = user.address || '';
+        }
+      }
+    } catch (error) {
+      console.error('Error loading customer info from localStorage', error);
+    }
   }
 
   confirmOrder() {
@@ -58,13 +79,11 @@ export class CheckoutComponent {
       !this.customer.phone ||
       !this.customer.address
     ) {
-      // alert('Vui lòng điền đầy đủ thông tin nhận hàng!');
       this.notificationService.show('warning', 'Vui lòng điền đầy đủ thông tin nhận hàng!');
       return;
     }
 
     if (!this.paymentMethod) {
-      // alert('Vui lòng chọn phương thức thanh toán!');
       this.notificationService.show('warning', 'Vui lòng chọn phương thức thanh toán!');
       return;
     }
@@ -84,7 +103,6 @@ export class CheckoutComponent {
         },
         error: (err) => {
           console.error(err);
-          // alert('Không thể kết nối VNPay. Vui lòng thử lại sau!');
           this.notificationService.show('error', 'Không thể kết nối VNPay. Vui lòng thử lại sau!');
         },
       });
@@ -93,28 +111,46 @@ export class CheckoutComponent {
 
     // Thanh toán Momo
     if (this.paymentMethod === 'momo') {
-      const amount = this.total;
-      const orderInfo = generateOrderId();
-      console.log('Order Info (MoMo):', orderInfo);
-      // const orderInfo = `Thanh toan don hang cua ${this.customer.fullName}-${Date.now()}`;
-      const itemIds = this.selectedItems.map((item) => item.id);
+      const profileRaw = localStorage.getItem('user_profile');
+      let customerId = null;
+      if (profileRaw) {
+        try {
+          const profile = JSON.parse(profileRaw);
+          const user = profile?.result ?? profile;
+          customerId = user?.id;
+        } catch (e) {
+          console.error('Could not parse user profile for customerId', e);
+        }
+      }
+
+      const billData = {
+        paymentId: 1, // 1 là ID cho phương thức MoMo
+        customerId: customerId,
+        customerName: this.customer.fullName,
+        phone: this.customer.phone,
+        email: this.customer.email,
+        address: this.customer.address,
+        note: '', // Có thể thêm trường note vào form nếu cần
+        products: this.selectedItems.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity || 1,
+        })),
+      };
+
       localStorage.setItem('checkoutItemIds', JSON.stringify(itemIds));
 
-      this.paymentService.createMomoPayment({ amount, orderInfo }).subscribe({
+      this.paymentService.createMomoPayment(billData).subscribe({
         next: (res) => {
-          console.log('MoMo response:', res);
-          if (res && res.payUrl) {
+          if (res?.payUrl) {
+            this.removeCheckoutItemIds();
+            console.log('Redirecting to MoMo payment URL:', res.payUrl);
             window.location.href = res.payUrl;
-          } else if (res && res.message) {
-            // alert('MoMo trả về: ' + res.message);
           } else {
-            // alert('Không nhận được payUrl từ MoMo.');
+            this.notificationService.show('error', 'Không nhận được URL thanh toán từ MoMo.');
           }
         },
         error: (err) => {
-          console.error(err);
-          // alert('Không thể kết nối MoMo. Vui lòng thử lại sau!');
-          this.notificationService.show('error', 'Không thể kết nối MoMo. Vui lòng thử lại sau!');
+          this.notificationService.show('error', err?.error?.message || 'Không thể kết nối MoMo.');
         },
       });
       return;
@@ -122,28 +158,64 @@ export class CheckoutComponent {
 
     // Thanh toán COD
     if (this.paymentMethod === 'cod') {
-      localStorage.setItem('checkoutItemIds', JSON.stringify(itemIds));
-      this.router.navigate(['/payment-result'], {
-        state: {
-          gateway: 'cod',
-          paymentStatus: 'success',
-          amount: this.total,
-          itemIds,
+      const profileRaw = localStorage.getItem('user_profile');
+      let customerId = null;
+      if (profileRaw) {
+        try {
+          const profile = JSON.parse(profileRaw);
+          const user = profile?.result ?? profile;
+          customerId = user?.id;
+        } catch (e) {
+          console.error('Could not parse user profile for customerId', e);
+        }
+      }
+
+      const billData = {
+        paymentId: 5, // 5 là ID cho phương thức COD
+        customerId: customerId,
+        customerName: this.customer.fullName,
+        phone: this.customer.phone,
+        email: this.customer.email,
+        address: this.customer.address,
+        products: this.selectedItems.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity || 1,
+        })),
+      };
+
+      this.orderService.createBill(billData).subscribe({
+        next: (response) => {
+          this.notificationService.show('success', 'Đặt hàng thành công!');
+          // Xóa các sản phẩm đã mua khỏi giỏ hàng
+          itemIds.forEach((id) => this.cartService.removeItem(id));
+          // Chuyển hướng đến trang lịch sử đơn hàng
+          this.router.navigate(['/order-history']);
+        },
+        error: (err) => {
+          this.notificationService.show(
+            'error',
+            err?.error?.message || 'Đã có lỗi xảy ra khi tạo đơn hàng.'
+          );
         },
       });
     }
   }
-}
 
-function generateOrderId(): string {
-  const now = new Date();
+  removeCheckoutItemIds(): void {
+    const itemIdsString = localStorage.getItem('checkoutItemIds');
+    if (itemIdsString) {
+      try {
+        const itemIds: number[] = JSON.parse(itemIdsString);
 
-  const year = now.getFullYear().toString();
-  const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Tháng 0-11
-  const day = now.getDate().toString().padStart(2, '0');
-  const hours = now.getHours().toString().padStart(2, '0');
-  const minutes = now.getMinutes().toString().padStart(2, '0');
-  const seconds = now.getSeconds().toString().padStart(2, '0');
+        // Sử dụng đúng instance được Angular quản lý để xóa vật phẩm khỏi giỏ hàng
+        itemIds.forEach((id) => {
+          this.cartService.removeItem(id);
+        });
 
-  return `${year}${month}${day}${hours}${minutes}${seconds}`;
+        localStorage.removeItem('checkoutItemIds');
+      } catch (e) {
+        console.error('Error parsing checkoutItemIds from localStorage', e);
+      }
+    }
+  }
 }

@@ -14,7 +14,6 @@ import { CartService } from '@/app/core/services/cart.service';
 export class PaymentResultComponent implements OnInit {
   paymentInfo: any = null;
   gateway: string = '';
-  private cartService = inject(CartService);
 
   constructor(private router: Router) {}
 
@@ -28,12 +27,12 @@ export class PaymentResultComponent implements OnInit {
 
     this.paymentInfo = state;
     this.gateway = state.gateway === 'vnpay' ? 'VNPay' : state.gateway === 'momo' ? 'MoMo' : 'COD';
-    const itemIdsString = localStorage.getItem('checkoutItemIds');
-    if (state.paymentStatus === 'success' && itemIdsString) {
-      const itemIds: number[] = JSON.parse(itemIdsString);
-      itemIds.forEach((id) => this.cartService.removeItem(id));
-      localStorage.removeItem('checkoutItemIds');
-    }
+    // const itemIdsString = localStorage.getItem('checkoutItemIds');
+    // if (state.paymentStatus === 'success' && itemIdsString) {
+    //   const itemIds: number[] = JSON.parse(itemIdsString);
+    //   itemIds.forEach((id) => this.cartService.removeItem(id));
+    //   localStorage.removeItem('checkoutItemIds');
+    // }
   }
 
   goHome() {

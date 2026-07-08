@@ -60,7 +60,6 @@ export class RegisterComponent {
 
     this.http.post(`users/register`, formData).subscribe({
       next: () => {
-        // alert('Đăng ký thành công!');
         this.notificationService.show('success', 'Đăng ký thành công!');
         this.errorMessage = '';
         this.router.navigate(['/login']);

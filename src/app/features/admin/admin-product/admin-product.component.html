@@ -234,7 +234,7 @@
 
     <div class="actions">
       <button type="submit" class="btn-primary" [disabled]="isSavingProduct">
-        {{ editingProductCode ? 'Cập nhật' : 'Lưu sản phẩm' }}
+        {{ isSavingProduct ? 'Đang lưu...' : 'Lưu sản phẩm' }}
       </button>
       <button
         type="button"

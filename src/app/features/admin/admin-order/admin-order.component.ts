@@ -2,13 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { Router } from '@angular/router';
 import { OrderService } from '../../../core/services/order.service';
+import { ConfirmDialogComponent } from '@/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { NotificationService } from '@/app/core/services/notification.service';
 
 @Component({
   selector: 'app-admin-order',
   templateUrl: './admin-order.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzTableModule],
+  imports: [CommonModule, FormsModule, NzTableModule, ConfirmDialogComponent],
   styleUrls: ['../admin.component.css', './admin-order.component.css'],
 })
 export class AdminOrderComponent implements OnInit {
@@ -17,6 +20,14 @@ export class AdminOrderComponent implements OnInit {
   pageIndex = 1;
   pageSize = 10;
   isLoading = false;
+
+  // Confirm Dialog
+  confirmVisible = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmText = 'Xác nhận';
+  confirmVariant: 'primary' | 'warning' | 'danger' = 'warning';
+  private confirmAction: (() => void) | null = null;
 
   readonly statusOptions = [
     { value: '', label: 'Tất cả trạng thái' },
@@ -35,7 +46,11 @@ export class AdminOrderComponent implements OnInit {
     toDate: '',
   };
 
-  constructor(private orderService: OrderService) {}
+  constructor(
+    private orderService: OrderService,
+    private router: Router,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.loadOrders();
@@ -45,7 +60,7 @@ export class AdminOrderComponent implements OnInit {
     this.scrollToTop();
     this.isLoading = true;
     const params = {
-      pageIndex: this.pageIndex - 1,
+      pageIndex: this.pageIndex,
       pageSize: this.pageSize,
       ...this.filterParams,
     };
@@ -105,13 +120,12 @@ export class AdminOrderComponent implements OnInit {
   }
 
   viewDetail(order: any): void {
-    // Logic mở modal hoặc chuyển hướng trang chi tiết
-    console.log('Xem chi tiết đơn:', order.code);
+    this.router.navigate(['/admin/orders', order.id]);
   }
 
-  updateStatus(order: any, newStatus: string): void {
+  private updateStatus(order: any, newStatus: string, successMessage: string): void {
     this.orderService.updateBill(order.id, { status: newStatus }).subscribe(() => {
-      // Cập nhật lại danh sách sau khi đổi trạng thái thành công
+      this.notificationService.show('success', successMessage);
       this.loadOrders();
     });
   }
@@ -133,22 +147,72 @@ export class AdminOrderComponent implements OnInit {
   }
 
   confirmOrder(order: any): void {
-    this.updateStatus(order, '3');
+    this.openConfirm({
+      title: 'Xác nhận đơn hàng',
+      message: `Bạn có chắc chắn muốn xác nhận đơn hàng #${order.id}?`,
+      confirmText: 'Xác nhận',
+      variant: 'primary',
+      action: () => {
+        this.updateStatus(order, '3', `Đã xác nhận đơn hàng #${order.id}.`);
+      },
+    });
   }
 
   shipOrder(order: any): void {
-    this.updateStatus(order, '4');
+    this.openConfirm({
+      title: 'Xác nhận giao hàng',
+      message: `Chuyển đơn hàng #${order.id} sang trạng thái "Đang giao hàng"?`,
+      confirmText: 'Xác nhận',
+      variant: 'primary',
+      action: () => {
+        this.updateStatus(order, '4', `Đơn hàng #${order.id} đang được giao.`);
+      },
+    });
   }
 
   completeOrder(order: any): void {
-    this.updateStatus(order, '5');
+    this.openConfirm({
+      title: 'Xác nhận hoàn thành',
+      message: `Bạn có chắc chắn muốn hoàn thành đơn hàng #${order.id}?`,
+      confirmText: 'Hoàn thành',
+      variant: 'primary',
+      action: () => {
+        this.updateStatus(order, '5', `Đã hoàn thành đơn hàng #${order.id}.`);
+      },
+    });
   }
 
   cancelOrder(order: any): void {
-    this.updateStatus(order, '6');
+    this.openConfirm({
+      title: 'Xác nhận hủy đơn hàng',
+      message: `Bạn có chắc chắn muốn hủy đơn hàng #${order.id}?`,
+      confirmText: 'Hủy đơn hàng',
+      variant: 'danger',
+      action: () => {
+        this.updateStatus(order, '6', `Đã hủy đơn hàng #${order.id}.`);
+      },
+    });
   }
 
   private scrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  private openConfirm(config: any): void {
+    this.confirmTitle = config.title;
+    this.confirmMessage = config.message;
+    this.confirmText = config.confirmText || 'Xác nhận';
+    this.confirmVariant = config.variant || 'warning';
+    this.confirmAction = config.action;
+    this.confirmVisible = true;
+  }
+
+  confirmActionNow(): void {
+    if (this.confirmAction) this.confirmAction();
+    this.confirmVisible = false;
+  }
+
+  closeConfirm(): void {
+    this.confirmVisible = false;
   }
 }

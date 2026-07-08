@@ -49,3 +49,7 @@
   background: #f3f4f6;
   color: #374151;
 }
+
+.order-code-link:hover {
+  text-decoration: underline !important;
+}

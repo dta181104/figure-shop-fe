@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OrderService } from '../../core/services/order.service';
-import { UserService } from '../../core/services/user.service';
+import { RouterLink } from '@angular/router';
+import { OrderService } from '@/app/core/services/order.service';
+import { UserService } from '@/app/core/services/user.service';
+import { NotificationService } from '@/app/core/services/notification.service';
+import { ConfirmDialogComponent } from '@/app/shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-order-history',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink, ConfirmDialogComponent],
   templateUrl: './order-history.component.html',
   styleUrls: ['./order-history.component.css'],
 })
@@ -14,9 +17,18 @@ export class OrderHistoryComponent implements OnInit {
   orders: any[] = [];
   isLoading = false;
 
+  // Confirm Dialog
+  confirmVisible = false;
+  confirmTitle = '';
+  confirmMessage = '';
+  confirmText = 'Xác nhận';
+  confirmVariant: 'primary' | 'warning' | 'danger' = 'warning';
+  private confirmAction: (() => void) | null = null;
+
   constructor(
     private orderService: OrderService,
-    private userService: UserService
+    private userService: UserService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -68,14 +80,38 @@ export class OrderHistoryComponent implements OnInit {
   }
 
   cancelOrder(orderId: number): void {
-    if (confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) {
-      this.orderService.updateBill(orderId, { status: '6' }).subscribe({
-        next: () => {
-          alert('Hủy đơn hàng thành công');
-          this.loadUserAndOrders();
-        },
-        error: (err) => alert('Lỗi khi hủy đơn: ' + err.message),
-      });
-    }
+    this.openConfirm({
+      title: 'Xác nhận hủy đơn hàng',
+      message: 'Bạn có chắc chắn muốn hủy đơn hàng này không?',
+      confirmText: 'Hủy đơn hàng',
+      variant: 'danger',
+      action: () => {
+        this.orderService.updateBill(orderId, { status: '6' }).subscribe({
+          next: () => {
+            this.notificationService.show('success', 'Hủy đơn hàng thành công');
+            this.loadUserAndOrders();
+          },
+          error: (err) => this.notificationService.show('error', 'Lỗi khi hủy đơn: ' + err.message),
+        });
+      },
+    });
+  }
+
+  private openConfirm(config: any): void {
+    this.confirmTitle = config.title;
+    this.confirmMessage = config.message;
+    this.confirmText = config.confirmText || 'Xác nhận';
+    this.confirmVariant = config.variant || 'warning';
+    this.confirmAction = config.action;
+    this.confirmVisible = true;
+  }
+
+  confirmActionNow(): void {
+    if (this.confirmAction) this.confirmAction();
+    this.confirmVisible = false;
+  }
+
+  closeConfirm(): void {
+    this.confirmVisible = false;
   }
 }

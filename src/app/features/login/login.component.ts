@@ -81,7 +81,6 @@ export class LoginComponent {
           } else {
             this.errorMessage =
               res?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.';
-            // alert(this.errorMessage);
             this.notificationService.show('error', this.errorMessage);
           }
         },
@@ -89,7 +88,6 @@ export class LoginComponent {
           console.error('Lỗi đăng nhập:', err);
           this.errorMessage =
             err?.error?.message || 'Yêu cầu đăng nhập thất bại. Vui lòng thử lại sau.';
-          // alert(this.errorMessage);
           this.notificationService.show('error', this.errorMessage);
         },
       });

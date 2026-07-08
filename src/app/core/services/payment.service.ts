@@ -22,7 +22,7 @@ export class PaymentService {
 
   // Momo API
   createMomoPayment(payload: any): Observable<any> {
-    return this.http.post<any>('momo', null, { params: payload });
+    return this.http.post<any>('momo', payload);
   }
 
   checkMomoOrderStatus(orderId: string): Observable<any> {

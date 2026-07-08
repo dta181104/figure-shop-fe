@@ -112,7 +112,6 @@ export class DetailComponent implements OnInit {
   addToCart(): void {
     if (!this.product) return;
     this.cartService.addToCart(this.product);
-    // alert('Đã thêm sản phẩm vào giỏ hàng!');
     this.notificationService.show('success', 'Thêm giỏ hàng thành công!');
   }
 

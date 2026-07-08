@@ -1,0 +1,138 @@
+<div class="order-detail-page">
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Đang tải chi tiết đơn hàng...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+    <button (click)="goBack()" class="btn btn-secondary">Quay lại</button>
+  </div>
+
+  <div *ngIf="order && !isLoading" class="order-detail-container">
+    <div class="header-bar">
+      <h1 class="page-title">Chi tiết đơn hàng #{{ order.code }}</h1>
+      <div class="order-actions">
+        <button (click)="goBack()" class="btn btn-secondary">Quay lại danh sách</button>
+      </div>
+    </div>
+
+    <!-- Thông tin chung -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Thông tin chung</h2>
+      </div>
+      <div class="card-body grid-info">
+        <div>
+          <strong>Ngày đặt:</strong>
+          <span>{{ order.createdDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div>
+          <strong>Trạng thái:</strong>
+          <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+            {{ getStatusLabel(order.status) }}
+          </span>
+        </div>
+        <div>
+          <strong>Phương thức thanh toán:</strong>
+          <span>{{ getPaymentMethodLabel(order.paymentMethod) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thông tin giao hàng -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Thông tin giao hàng</h2>
+      </div>
+      <div class="card-body grid-info">
+        <div>
+          <strong>Người nhận:</strong>
+          <span>{{ order.customerName }}</span>
+        </div>
+        <div>
+          <strong>Số điện thoại:</strong>
+          <span>{{ order.phone }}</span>
+        </div>
+        <div class="full-width">
+          <strong>Địa chỉ giao hàng:</strong>
+          <span>{{ order.address }}</span>
+        </div>
+        <div class="full-width" *ngIf="order.note">
+          <strong>Ghi chú:</strong>
+          <span>{{ order.note }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chi tiết sản phẩm -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Danh sách sản phẩm</h2>
+      </div>
+      <div class="card-body">
+        <table class="table product-table">
+          <thead>
+            <tr>
+              <th>Sản phẩm</th>
+              <th>Đơn giá</th>
+              <th>Số lượng</th>
+              <th>Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of order.billDetails">
+              <td>
+                <div class="product-info">
+                  <span>{{ item.product.name }}</span>
+                </div>
+              </td>
+              <td class="text-right">{{ item.price | number: '1.0-0' }} ₫</td>
+              <td class="text-right">{{ item.quantity }}</td>
+              <td class="text-right">{{ item.price * item.quantity | number: '1.0-0' }} ₫</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="3" class="text-right"><strong>Tổng cộng</strong></td>
+              <td class="text-right">
+                <strong>{{ order.totalMoney | number: '1.0-0' }} ₫</strong>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Thao tác cuối trang -->
+    <div class="footer-actions">
+      <button
+        *ngIf="canCancel(order)"
+        (click)="cancelOrder(order.id)"
+        style="
+          background: #be123c;
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 500;
+          font-size: 0.875rem;
+        "
+      >
+        Hủy đơn
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [visible]="confirmVisible"
+  [title]="confirmTitle"
+  [message]="confirmMessage"
+  [confirmText]="confirmText"
+  cancelText="Hủy"
+  [variant]="confirmVariant"
+  (confirm)="confirmActionNow()"
+  (cancel)="closeConfirm()"
+></app-confirm-dialog>

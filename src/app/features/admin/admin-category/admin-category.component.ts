@@ -64,29 +64,42 @@ export class AdminCategoryComponent implements OnInit {
       return;
     }
 
+    if (this.editingCategoryCode !== '') {
+      this.openConfirm({
+        title: 'Xác nhận cập nhật',
+        message: `Bạn có chắc chắn muốn cập nhật danh mục ${this.categoryForm.name}?`,
+        confirmText: 'Cập nhật',
+        variant: 'warning',
+        action: () => this.proceedSaveCategory(),
+      });
+    } else {
+      this.proceedSaveCategory();
+    }
+  }
+
+  private proceedSaveCategory(): void {
     this.isSaving = true;
     this.categoryError = '';
     this.categoryMessage = '';
+    const isEditing = this.editingCategoryCode !== '';
 
     const payload: Partial<CategoryItem> = {
       code: this.categoryForm.code.trim() || undefined,
       name: this.categoryForm.name.trim(),
     };
 
-    const request =
-      this.editingCategoryCode !== ''
-        ? this.categoryService.updateCategory(this.editingCategoryCode, {
-            ...payload,
-            code: this.categoryForm.code.trim() || this.editingCategoryCode,
-          })
-        : this.categoryService.createCategory(payload);
+    const request$ = isEditing
+      ? this.categoryService.updateCategory(this.editingCategoryCode, {
+          ...payload,
+          code: this.categoryForm.code.trim() || this.editingCategoryCode,
+        })
+      : this.categoryService.createCategory(payload);
 
-    request.pipe(finalize(() => (this.isSaving = false))).subscribe({
+    request$.pipe(finalize(() => (this.isSaving = false))).subscribe({
       next: () => {
-        this.categoryMessage =
-          this.editingCategoryCode !== ''
-            ? 'Cập nhật danh mục thành công.'
-            : 'Tạo danh mục thành công.';
+        this.categoryMessage = isEditing
+          ? 'Cập nhật danh mục thành công.'
+          : 'Tạo danh mục thành công.';
         this.resetForm();
         this.loadCategories();
       },
@@ -122,13 +135,22 @@ export class AdminCategoryComponent implements OnInit {
   restoreCategory(category: CategoryItem): void {
     if (!category.code) return;
 
-    this.categoryService.updateCategory(category.code, { deleted: false } as any).subscribe({
-      next: () => {
-        this.categoryMessage = 'Khôi phục danh mục thành công.';
-        this.loadCategories();
-      },
-      error: () => {
-        this.categoryError = 'Không thể khôi phục danh mục.';
+    this.openConfirm({
+      title: 'Xác nhận khôi phục',
+      message: `Bạn có chắc chắn muốn khôi phục danh mục ${category.name}?`,
+      confirmText: 'Khôi phục',
+      variant: 'primary',
+      action: () => {
+        if (!category.code) return;
+        this.categoryService.updateCategory(category.code, { deleted: false } as any).subscribe({
+          next: () => {
+            this.categoryMessage = 'Khôi phục danh mục thành công.';
+            this.loadCategories();
+          },
+          error: () => {
+            this.categoryError = 'Không thể khôi phục danh mục.';
+          },
+        });
       },
     });
   }

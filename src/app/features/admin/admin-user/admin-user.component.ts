@@ -201,6 +201,16 @@ export class AdminUserComponent implements OnInit {
   }
 
   restoreUser(user: AdminUser): void {
+    this.openConfirm({
+      title: 'Xác nhận khôi phục',
+      message: `Khôi phục người dùng ${user.username}?`,
+      confirmText: 'Khôi phục',
+      variant: 'primary',
+      action: () => this.proceedRestoreUser(user),
+    });
+  }
+
+  private proceedRestoreUser(user: AdminUser): void {
     this.adminService.updateAccount(user.code!, { deleted: false } as any).subscribe({
       next: () => {
         this.userMessage = 'Khôi phục tài khoản thành công.';

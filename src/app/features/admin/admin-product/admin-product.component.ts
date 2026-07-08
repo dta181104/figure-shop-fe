@@ -252,11 +252,11 @@ export class AdminProductComponent implements OnInit {
     this.scrollToForm();
     this.resetProductForm();
     this.editingProductCode = product.code || '';
-    this.isSavingProduct = true; // Tận dụng cờ loading có sẵn
+    // this.isSavingProduct = true; // Tận dụng cờ loading có sẵn
 
     this.productService
       .getProductById(product.id.toString())
-      .pipe(finalize(() => (this.isSavingProduct = false)))
+      // .pipe(finalize(() => (this.isSavingProduct = false)))
       .subscribe({
         next: (res) => {
           const detailedProduct = res.result;
@@ -309,7 +309,6 @@ export class AdminProductComponent implements OnInit {
       confirmText: 'Khôi phục',
       variant: 'primary',
       action: () => {
-        // Giả sử API update hỗ trợ chuyển trạng thái deleted hoặc có endpoint riêng
         this.productService.updateProduct(product.code!, { deleted: false } as any).subscribe({
           next: () => this.loadProducts(),
           error: (err) => (this.productError = 'Không thể khôi phục sản phẩm.'),

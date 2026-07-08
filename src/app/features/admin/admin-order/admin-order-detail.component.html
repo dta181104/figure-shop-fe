@@ -1,0 +1,125 @@
+<div class="admin-page">
+  <div class="header-bar">
+    <h1 class="page-title">Chi Tiết Đơn Hàng</h1>
+    <a routerLink="/admin/orders" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Quay lại danh sách
+    </a>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-indicator">Đang tải...</div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div *ngIf="!isLoading && order" class="order-detail-container">
+    <!-- Thông tin chung -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Thông tin chung</h2>
+      </div>
+      <div class="card-body grid-info">
+        <div>
+          <strong>Mã đơn hàng:</strong>
+          <span>{{ order.code }}</span>
+        </div>
+        <div>
+          <strong>Ngày đặt:</strong>
+          <span>{{ order.createdDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div>
+          <strong>Trạng thái:</strong>
+          <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+            {{ getStatusLabel(order.status) }}
+          </span>
+        </div>
+        <div>
+          <strong>Phương thức thanh toán:</strong>
+          <span>{{ getPaymentMethodLabel(order.paymentMethod) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thông tin khách hàng -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Thông tin khách hàng</h2>
+      </div>
+      <div class="card-body grid-info">
+        <div>
+          <strong>Tên khách hàng:</strong>
+          <span>{{ order.customerName }}</span>
+        </div>
+        <div>
+          <strong>Số điện thoại:</strong>
+          <span>{{ order.phone }}</span>
+        </div>
+        <div class="full-width">
+          <strong>Địa chỉ giao hàng:</strong>
+          <span>{{ order.address }}</span>
+        </div>
+        <div class="full-width" *ngIf="order.note">
+          <strong>Ghi chú:</strong>
+          <span>{{ order.note }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chi tiết sản phẩm -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Danh sách sản phẩm</h2>
+      </div>
+      <div class="card-body">
+        <table class="table product-table">
+          <thead>
+            <tr>
+              <th>Sản phẩm</th>
+              <th>Đơn giá</th>
+              <th>Số lượng</th>
+              <th>Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of order.billDetails">
+              <td>
+                <div class="product-info">
+                  <span>{{ item.product.name }}</span>
+                </div>
+              </td>
+              <td class="text-right">{{ item.price | number: '1.0-0' }} ₫</td>
+              <td class="text-right">{{ item.quantity }}</td>
+              <td class="text-right">{{ item.price * item.quantity | number: '1.0-0' }} ₫</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="3" class="text-right"><strong>Tổng cộng</strong></td>
+              <td class="text-right">
+                <strong>{{ order.totalMoney | number }} ₫</strong>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="inline-actions" style="justify-content: right" *ngIf="order">
+      <button *ngIf="canConfirm(order)" class="action-btn action-restore" (click)="confirmOrder()">
+        Xác nhận
+      </button>
+      <button *ngIf="canShip(order)" class="action-btn action-edit" (click)="shipOrder()">
+        Giao hàng
+      </button>
+      <button
+        *ngIf="canComplete(order)"
+        class="action-btn action-restore"
+        (click)="completeOrder()"
+      >
+        Hoàn thành
+      </button>
+      <button *ngIf="canCancel(order)" class="action-btn action-delete" (click)="cancelOrder()">
+        Hủy
+      </button>
+    </div>
+  </div>
+</div>

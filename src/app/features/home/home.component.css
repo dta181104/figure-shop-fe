@@ -417,18 +417,20 @@ a {
   gap: 10px;
 }
 .brand {
-  font-weight: 900;
+  font-weight: 800;
+  color: #fff;
   letter-spacing: 0.05em;
 }
 .footer__nav {
   display: flex;
+  color: #fff;
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
 }
 .footer__copy {
   text-align: right;
-  color: var(--muted);
+  color: #fff;
 }
 
 /* Responsive */

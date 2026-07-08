@@ -69,26 +69,38 @@ export class AdminRoleComponent implements OnInit {
 
   saveRole(): void {
     if (!this.roleForm.name) return;
-    this.isSaving = true;
 
-    // Tạo payload và đảm bảo permissions là mảng number
-    const payload: any = {
-      ...this.roleForm,
-      permissions: this.roleForm.permissions
-        .map((p) => Number(p))
-        .filter((id) => !isNaN(id) && id > 0),
+    if (this.editingRoleId != null) {
+      this.openConfirm({
+        title: 'Xác nhận cập nhật',
+        message: `Bạn có chắc chắn muốn cập nhật vai trò ${this.roleForm.name}?`,
+        confirmText: 'Cập nhật',
+        variant: 'warning',
+        action: () => this.proceedSaveRole(),
+      });
+    } else {
+      this.proceedSaveRole();
+    }
+  }
+
+  private proceedSaveRole(): void {
+    this.isSaving = true;
+    const isEditing = this.editingRoleId != null;
+
+    const payload = {
+      name: this.roleForm.name,
+      code: this.roleForm.code,
+      permissions: this.roleForm.permissions.map(Number).filter((id) => !isNaN(id) && id > 0),
     };
 
-    // Sử dụng != null để kiểm tra cả null và undefined
-    const request =
-      this.editingRoleId != null
-        ? this.roleService.updateRole(String(this.editingRoleId), {
-            ...payload,
-            id: this.editingRoleId,
-          })
-        : this.roleService.createRole(payload);
+    const request$ = isEditing
+      ? this.roleService.updateRole(String(this.editingRoleId), {
+          ...payload,
+          id: this.editingRoleId,
+        })
+      : this.roleService.createRole(payload);
 
-    request.pipe(finalize(() => (this.isSaving = false))).subscribe({
+    request$.pipe(finalize(() => (this.isSaving = false))).subscribe({
       next: () => {
         this.resetForm();
         this.loadRoles();
@@ -129,11 +141,19 @@ export class AdminRoleComponent implements OnInit {
   }
 
   restoreRole(role: any): void {
-    if (role.id) {
-      this.roleService
-        .updateRole(String(role.id), { ...role, deleted: false })
-        .subscribe(() => this.loadRoles());
-    }
+    this.openConfirm({
+      title: 'Xác nhận khôi phục',
+      message: `Bạn có chắc chắn muốn khôi phục vai trò ${role.name}?`,
+      confirmText: 'Khôi phục',
+      variant: 'primary',
+      action: () => {
+        if (role.id) {
+          this.roleService
+            .updateRole(String(role.id), { ...role, deleted: false })
+            .subscribe(() => this.loadRoles());
+        }
+      },
+    });
   }
 
   resetForm(): void {

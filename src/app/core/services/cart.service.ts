@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ProductItems } from '@/app/core/models/product-item.model';
+import { NotificationService } from '@/app/core/services/notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,8 @@ export class CartService {
   private cartSubject = new BehaviorSubject<(ProductItems & { quantity?: number })[]>(
     this.getCart()
   );
+    private notificationService = inject(NotificationService);
+
   cart$ = this.cartSubject.asObservable();
 
   constructor() {}
@@ -71,11 +74,20 @@ export class CartService {
   }
 
   /** Tăng số lượng sản phẩm */
-  increaseQuantity(product: ProductItems) {
+  increaseQuantity(product: ProductItems, stockQuantity: number) {
     const cart = this.getCart();
     const item = cart.find((p) => p.id === product.id);
-    if (item) item.quantity = (item.quantity || 1) + 1;
-    this.saveCart(cart);
+    if (item) {
+      const currentQuantity = item.quantity || 1;
+      if (currentQuantity < stockQuantity) {
+        item.quantity = currentQuantity + 1;
+        this.saveCart(cart);
+      } else {
+        this.notificationService.show('warning', `Số lượng sản phẩm "${product.name}" trong kho không đủ.`);
+        item.quantity = stockQuantity; // Cập nhật về số lượng tối đa
+        this.saveCart(cart);
+      }
+    }
   }
 
   /** Giảm số lượng sản phẩm */

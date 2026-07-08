@@ -39,19 +39,4 @@ export class OrderService {
   deleteBill(id: string | number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
-
-  /** Gọi API lấy URL thanh toán MoMo */
-  getPayUrlMoMo(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/thanhtoan/momo`, data);
-  }
-
-  /** Xác minh thanh toán MoMo */
-  verifyMoMo(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/thanhtoan/momo/verify`, data);
-  }
-
-  /** Xác minh thanh toán VNPay */
-  verifyVNPAY(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/thanhtoan/vnpay/verify`, data);
-  }
 }
